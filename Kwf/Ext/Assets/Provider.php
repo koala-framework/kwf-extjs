@@ -100,7 +100,7 @@ class Kwf_Ext_Assets_Provider extends Kwf_Assets_Provider_Abstract
             }
             if (!file_exists('vendor/koala-framework/library-extjs'.$file)) return null;
             if ($file == 'vendor/koala-framework/library-extjs/src/lang/Error.js') {
-                return new Kwf_Assets_Dependency_File_Js('kwf/Kwf_js/Ext4/Error.js');
+                return new Kwf_Assets_Dependency_File_Js('kwfext/Error.js');
             }
 
             return new Kwf_Ext_Assets_JsDependency('ext'.$file);
