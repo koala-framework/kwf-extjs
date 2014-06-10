@@ -1,3 +1,3 @@
-Ext4.define('Kwf.Ext.TestClsExtend', {
-    extend: 'Kwf.Ext.TestCls'
+Ext4.define('Kwf.Ext.Assets.TestClsExtend', {
+    extend: 'Kwf.Ext.Assets.TestCls'
 });

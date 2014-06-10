@@ -1,5 +1,5 @@
-Ext4.define('Kwf.Assets.Ext4.TestClsRecursion1', {
+Ext4.define('Kwf.Ext.Assets.TestClsRecursion1', {
     requires: [
-        'Kwf.Assets.Ext4.TestClsRecursion2'
+        'Kwf.Ext.Assets.TestClsRecursion2'
     ]
 });

@@ -1,3 +1,3 @@
 Ext4.require([
-    'Kwf.Ext.TestCls'
+    'Kwf.Ext.Assets.TestCls'
 ]);

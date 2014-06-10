@@ -58,10 +58,10 @@ class Kwf_Ext_Assets_Provider extends Kwf_Assets_Provider_Abstract
         static $ret;
         if (isset($ret)) return $ret;
         $ret = array();
-        $it = new RecursiveIteratorIterator(new RecursiveDirectoryIterator(Kwf_Config::getValue('path.kwf').'/Kwf_js/Ext4/Overrides'), RecursiveIteratorIterator::LEAVES_ONLY);
+        $it = new RecursiveIteratorIterator(new RecursiveDirectoryIterator(KWF_PATH.'/Kwf_js/Ext4/Overrides'), RecursiveIteratorIterator::LEAVES_ONLY);
         foreach ($it as $i) {
             if (substr($i->getPathname(), -3) != '.js') continue;
-            $depName = 'Kwf.'.str_replace('/', '.', substr($i->getPathname(), strlen(Kwf_Config::getValue('path.kwf').'/Kwf_js/'), -3));
+            $depName = 'Kwf.'.str_replace('/', '.', substr($i->getPathname(), strlen(KWF_PATH.'/Kwf_js/'), -3));
             $fileContents = file_get_contents($i->getPathname());
 
             // remove comments to avoid dependencies from docs/examples
