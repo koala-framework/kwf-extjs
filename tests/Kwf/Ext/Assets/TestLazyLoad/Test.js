@@ -22,7 +22,7 @@ QUnit.asyncTest( "Test Lazy Load", function( assert ) {
     var tries = 0;
     var fn = function() {
         tries++;
-        if (tries > 100) {
+        if (tries > 300) {
             QUnit.start();
             return;
         }
