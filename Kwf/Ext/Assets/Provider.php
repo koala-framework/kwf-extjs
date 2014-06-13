@@ -5,7 +5,7 @@ class Kwf_Ext_Assets_Provider extends Kwf_Assets_Provider_Abstract
     {
         static $classes;
         if (isset($classes)) return $classes;
-        $p = 'vendor/koala-framework/library-extjs';
+        $p = VENDOR_PATH.'/koala-framework/library-extjs';
         $classes = array_merge(
             self::_getAliasClassesForPath($p.'/src', $p.'/src'),
             self::_getAliasClassesForPath($p.'/examples/ux', $p.'/examples')
@@ -98,8 +98,8 @@ class Kwf_Ext_Assets_Provider extends Kwf_Assets_Provider_Abstract
             } else {
                 $file = '/src'.str_replace('.', '/', $class).'.js';
             }
-            if (!file_exists('vendor/koala-framework/library-extjs'.$file)) return null;
-            if ($file == 'vendor/koala-framework/library-extjs/src/lang/Error.js') {
+            if (!file_exists(VENDOR_PATH.'/koala-framework/library-extjs'.$file)) return null;
+            if ($file == VENDOR_PATH.'/koala-framework/library-extjs/src/lang/Error.js') {
                 return new Kwf_Assets_Dependency_File_Js('kwfext/Error.js');
             }
 
