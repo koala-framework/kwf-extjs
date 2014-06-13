@@ -10,7 +10,7 @@ class Kwf_Ext_Assets_CssDependency extends Kwf_Assets_Dependency_File
     {
         $ret = parent::getContents($language);
         $ret = str_replace('.x-', '.x4-', $ret);
-        $ret = str_replace('url(images/', 'url(/assets/kwfext/resources/ext-theme-neptune/images/', $ret);
+        $ret = str_replace('url(images/', 'url(/assets/ext/resources/ext-theme-neptune/images/', $ret);
         return $ret;
     }
 }
