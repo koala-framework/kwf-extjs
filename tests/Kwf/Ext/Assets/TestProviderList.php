@@ -9,6 +9,7 @@ class Kwf_Ext_Assets_TestProviderList extends Kwf_Assets_ProviderList_Abstract
             new Kwf_Assets_Provider_JsClass(getcwd(), 'kwfext', 'kwfext'), //for @require (sub optimal)
             new Kwf_Assets_Provider_JsClass(getcwd().'/tests/Kwf/Ext', 'kwfext/tests/Kwf/Ext', 'Kwf.Ext'),
             new Kwf_Assets_Provider_Ini(dirname(__FILE__).'/ProviderTestDependencies.ini'),
+            new Kwf_Assets_Provider_Ini(VENDOR_PATH.'/koala-framework/library-qunit/dependencies.ini'),
         ));
     }
 }
