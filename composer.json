@@ -2,7 +2,7 @@
     "name": "koala-framework/kwf-extjs",
     "description": "ExtJS Integration for Koala Framework",
     "homepage": "http://www.koala-framework.org/",
-    "license": "BSD",
+    "license": "BSD-2-Clause",
     "type": "library",
     "require": {
         "koala-framework/library-extjs": "4.2.*",
