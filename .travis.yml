@@ -21,3 +21,9 @@ script: "./vendor/bin/phpunit"
 notificaitons:
   irc: "irc.freenode.org#kwf"
 
+# caching doesn't work for free travis atm, but one day it probably will
+cache:
+  directories:
+    - /tmp/kwf-uglifyjs
+    - $HOME/.composer/cache
+
