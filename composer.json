@@ -6,7 +6,7 @@
     "type": "library",
     "require": {
         "koala-framework/library-extjs": "4.2.*",
-        "koala-framework/koala-framework": "dev-composer"
+        "koala-framework/koala-framework": "dev-master"
     },
     "require-dev": {
         "phpunit/phpunit": "3.7.*",
