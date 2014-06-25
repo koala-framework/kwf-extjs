@@ -58,10 +58,10 @@ class Kwf_Ext_Assets_Provider extends Kwf_Assets_Provider_Abstract
         static $ret;
         if (isset($ret)) return $ret;
         $ret = array();
-        $it = new RecursiveIteratorIterator(new RecursiveDirectoryIterator(KWF_PATH.'/Kwf_js/Ext4/Overrides'), RecursiveIteratorIterator::LEAVES_ONLY);
+        $it = new RecursiveIteratorIterator(new RecursiveDirectoryIterator(VENDOR_PATH.'/koala-framework/extjs-addons/Kwf/Ext4/Overrides'), RecursiveIteratorIterator::LEAVES_ONLY);
         foreach ($it as $i) {
             if (substr($i->getPathname(), -3) != '.js') continue;
-            $depName = 'Kwf.'.str_replace('/', '.', substr($i->getPathname(), strlen(KWF_PATH.'/Kwf_js/'), -3));
+            $depName = 'Kwf.'.str_replace('/', '.', substr($i->getPathname(), strlen(VENDOR_PATH.'/koala-framework/extjs-addons/Kwf/'), -3));
             $fileContents = file_get_contents($i->getPathname());
 
             // remove comments to avoid dependencies from docs/examples
@@ -243,12 +243,15 @@ class Kwf_Ext_Assets_Provider extends Kwf_Assets_Provider_Abstract
                 $overrides = self::_getOverrides();
                 if (isset($overrides[$define])) {
                     foreach ($overrides[$define] as $i) {
-                        $deps[Kwf_Assets_Dependency_Abstract::DEPENDENCY_TYPE_USES][] = $this->_providerList->findDependency($i);
+                        $j = $this->_providerList->findDependency($i);
+                        if (!$j) {
+                            throw new Kwf_Exception("Didn't find dependency '$i'");
+                        }
+                        $deps[Kwf_Assets_Dependency_Abstract::DEPENDENCY_TYPE_USES][] = $j;
                     }
                 }
             }
         }
-
 
         return $deps;
     }
