@@ -6,6 +6,8 @@ Ext4.onReady(function() {
     }
 
     if (Ext4.Date) {
+        Ext4.Date.defaultFormat = trlKwf('Y-m-d');
+
         Ext4.Date.monthNames = [
             trlKwf("January"),
             trlKwf("February"),
