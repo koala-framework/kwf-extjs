@@ -1,4 +1,5 @@
 /* Based on ext-lang-en.js from ext4 with trlKwf() calls added where appropriate */
+if (Ext4 && Ext4.onReady) {
 Ext4.onReady(function() {
 
     if (Ext4.data && Ext4.data.Types) {
@@ -337,3 +338,4 @@ Ext4.define("Ext.locale.en.Component", {
     override: "Ext.Component"
 });
 
+}
