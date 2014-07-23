@@ -163,6 +163,8 @@ class Kwf_Ext_Assets_ProviderTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(73, count($array));
     }
 
+    /*
+    TODO: move test to kwf-densajs as this override is now part of densajs
     public function testOverride()
     {
         $l = new Kwf_Ext_Assets_TestProviderList();
@@ -174,4 +176,5 @@ class Kwf_Ext_Assets_ProviderTest extends PHPUnit_Framework_TestCase
         }
         $this->assertContains(KWF_PATH.'/Kwf_js/Ext4/Overrides/ComboBox.js', $array);
     }
+    */
 }
