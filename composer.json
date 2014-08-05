@@ -5,13 +5,19 @@
     "license": "BSD-2-Clause",
     "type": "library",
     "require": {
-        "koala-framework/library-extjs": "4.2.*",
         "koala-framework/koala-framework": "dev-master"
     },
     "require-dev": {
-        "phpunit/phpunit": "3.7.*",
-        "koala-framework/library-qunit": "1.*",
-        "koala-framework/library-qunit-phantomjs-runner": "*"
+        "phpunit/phpunit": "3.7.*"
+    },
+    "extra": {
+        "require-bower": {
+            "extjs": "4.2.1-883"
+        },
+        "require-dev-bower": {
+            "qunit": "1.14.0",
+            "qunit-phantomjs-runner": "jonkemp/qunit-phantomjs-runner#1.2.0"
+        }
     },
     "autoload": {
         "psr-0": {
@@ -22,5 +28,7 @@
         "psr-0": {
             "Kwf_Ext_": "tests"
         }
-    }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
 }
