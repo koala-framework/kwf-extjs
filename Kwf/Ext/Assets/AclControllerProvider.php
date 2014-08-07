@@ -6,7 +6,7 @@ class Kwf_Ext_Assets_AclControllerProvider extends Kwf_Assets_Provider_Abstract
         if ($dependencyName == 'Ext4AclController') {
             $deps = array();
             foreach (Kwf_Acl::getInstance()->getAllResources() as $r) {
-                if ($r instanceof Kwf_Acl_Resource_MenuExt4) {
+                if ($r instanceof Kwf_Ext_AclResource_Menu) {
                     $cls = 'App.controller.'.$r->getExtController();
                     $d = $this->_providerList->findDependency($cls);
                     if (!$d) {
