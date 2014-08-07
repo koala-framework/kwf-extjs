@@ -12,7 +12,7 @@
     },
     "extra": {
         "require-bower": {
-            "extjs": "4.2.1-883"
+            "extjs": "5.0.0-970"
         },
         "require-dev-bower": {
             "qunit": "1.14.0",

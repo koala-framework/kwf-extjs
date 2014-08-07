@@ -15,9 +15,6 @@ Ext4.define('Kwf.Ext4.Menu', {
                       '</tpl>'],
     initComponent : function()
     {
-        this.addEvents(
-            'menuevent'
-        );
         this.callParent(arguments);
 
     },

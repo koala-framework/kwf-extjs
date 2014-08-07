@@ -1,6 +1,7 @@
 Ext4.define('Kwf.Ext4.App.MainController', {
-    extend: 'Ext.app.Controller',
-    $namespace: 'App',
+    extend: 'Ext.app.Application',
+    /*$namespace: 'App',*/
+    name: 'App',
     requires: [
         'Ext.state.LocalStorageProvider',
         'Ext.state.Manager',
@@ -9,17 +10,22 @@ Ext4.define('Kwf.Ext4.App.MainController', {
     mainPanel: null,
     viewport: null,
     _runningRequests: 0,
-    onLaunch: function()
+
+    launch: function()
     {
+        this.callParent(arguments);
+
         if (!this.mainPanel || !(this.mainPanel instanceof Ext4.panel.Panel)) {
             throw new Error("mainPanel is required and must be an Ext4.panel.Panel");
         }
         this.viewport = Ext4.create('Kwf.Ext4.Viewport', {
             items: [this.mainPanel]
         });
+
+        Ext4.get('loading').fadeOut({remove: true});
     },
 
-    init: function()
+    onBeforeLaunch: function()
     {
         if (Ext4.supports.LocalStorage) {
             Ext4.state.Manager.setProvider(new Ext4.state.LocalStorageProvider());
@@ -31,6 +37,8 @@ Ext4.define('Kwf.Ext4.App.MainController', {
         Ext4.Ajax.on('beforerequest', this.beforeAjaxRequest, this);
         Ext4.Ajax.on('requestcomplete', this.onAjaxRequestComplete, this);
         Ext4.Ajax.on('requestexception', this.onAjaxRequestException, this);
+
+        this.callParent(arguments);
     },
 
     beforeAjaxRequest: function(conn, options)

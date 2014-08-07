@@ -8,7 +8,9 @@ class Kwf_Ext_Assets_Provider extends Kwf_Assets_Provider_Abstract
         $p = VENDOR_PATH.'/bower_components/extjs';
         $classes = array_merge(
             self::_getAliasClassesForPath($p.'/src', $p.'/src'),
-            self::_getAliasClassesForPath($p.'/examples/ux', $p.'/examples')
+            self::_getAliasClassesForPath($p.'/overrides', $p.'/overrides'),
+            self::_getAliasClassesForPath($p.'/examples/ux', $p.'/examples'),
+            self::_getAliasClassesForPath($p.'/packages/sencha-core/src', $p.'/packages/sencha-core/src')
         );
         return $classes;
     }
@@ -55,32 +57,86 @@ class Kwf_Ext_Assets_Provider extends Kwf_Assets_Provider_Abstract
 
     public function getDependency($dependencyName)
     {
-        /*if ($dependencyName == 'Ext4Corex') {
-
-            $files = array(
-                'Ext4.class.Loader'
-            );
-            foreach ($files as $f) {
-                $d = $this->_providerList->findDependency($f);
-                if (!$d) throw new Kwf_Exception("Can't resolve dependency: extend $cls");
-                $deps[] = $d;
-            }
-            return new Kwf_Assets_Dependency_Dependencies($deps, $dependencyName);
-        } else*/
         if (substr($dependencyName, 0, 4) == 'Ext4') {
-            $class = substr($dependencyName, 4);
-            if (substr($class, 0, 4)=='.ux.') {
-                $file = '/examples'.str_replace('.', '/', $class).'.js';
+            if ($dependencyName == 'Ext4') {
+                $class = '.Ext';
             } else {
-                $file = '/src'.str_replace('.', '/', $class).'.js';
+                $class = substr($dependencyName, 4);
             }
-            if (!file_exists(VENDOR_PATH.'/bower_components/extjs'.$file)) return null;
-            if ($file == VENDOR_PATH.'/bower_components/extjs/src/lang/Error.js') {
-                return new Kwf_Assets_Dependency_File_Js('kwfext/Error.js');
+            if (substr($class, 0, 4)=='.ux.') {
+                $files = array(
+                    '/examples'.str_replace('.', '/', $class).'.js'
+                );
+            } else if (substr($class, 0, 11)=='.overrides.') {
+                $files = array(
+                    ''.str_replace('.', '/', $class).'.js'
+                );
+            } else {
+                if ($class == '.Boot') {
+                    $files = array(
+                        '/packages/sencha-core/.sencha/package/Boot.js',
+                    );
+                } else {
+                    $files = array(
+                        '/src'.str_replace('.', '/', $class).'.js',
+                        '/packages/sencha-core/src'.str_replace('.', '/', $class).'.js',
+                    );
+                }
             }
+            foreach ($files as $file) {
+                if ($file == VENDOR_PATH.'/bower_components/extjs/src/lang/Error.js') {
+                    return new Kwf_Assets_Dependency_File_Js('kwfext/Error.js');
+                }
+                if (file_exists(VENDOR_PATH.'/bower_components/extjs'.$file)) {
+                    return new Kwf_Ext_Assets_JsDependency('ext'.$file);
+                }
+            }
+            return null;
 
-            return new Kwf_Ext_Assets_JsDependency('ext'.$file);
         }
+    }
+
+    private function _getRecursiveDeps($f)
+    {
+        if ($f == 'Ext.overrides.*') return array(); //ignore overrides, we load them using OverridesProvider
+        if (substr($f, -2) != '.*') {
+            throw new Kwf_Exception("Invalid dependency: '$f', doesn't end with '.*'");
+        }
+        $f = substr($f, 0, -2); //strip off .*
+
+        if (substr($f, 0, 4) != 'Ext.') {
+            throw new Kwf_Exception("Invalid dependency: '$f', doesn't start with 'Ext.'");
+        }
+        $f = substr($f, 3); //strip off Ext
+
+        $paths = array(
+            '/src'.str_replace('.', '/', $f),
+            '/packages/sencha-core/src'.str_replace('.', '/', $f),
+        );
+        $libPath = VENDOR_PATH.'/bower_components/extjs';
+        $path = false;
+        foreach ($paths as $i) {
+            if (is_dir($libPath.$i)) {
+                $path = $i;
+            }
+        }
+        if (!$path) {
+            throw new Kwf_Exception("Path 'Ext$f.*' does not exist.");
+        }
+        $ret = array();
+        $it = new RecursiveDirectoryIterator($libPath.$path);
+        $it = new Kwf_Iterator_Filter_HiddenFiles($it);
+        $it = new RecursiveIteratorIterator($it);
+        foreach ($it as $file) {
+            $f = $file->getPathname();
+            $f = substr($f, strlen($libPath));
+            $f = substr($f, strpos($f, '/src')+4);
+            $cls = 'Ext4'.str_replace('/', '.', substr($f, 0, -3));
+            $d = $this->_providerList->findDependency($cls);
+            if (!$d) throw new Kwf_Exception("Can't resolve dependency: $cls");
+            $ret[] = $d;
+        }
+        return $ret;
     }
 
     public function getDependenciesForDependency(Kwf_Assets_Dependency_Abstract $dependency)
@@ -88,6 +144,8 @@ class Kwf_Ext_Assets_Provider extends Kwf_Assets_Provider_Abstract
         if (!$dependency instanceof Kwf_Assets_Dependency_File_Js && !$dependency instanceof Kwf_Ext_Assets_JsDependency) {
             return array();
         }
+
+
         $deps = array(
             Kwf_Assets_Dependency_Abstract::DEPENDENCY_TYPE_REQUIRES => array(),
             Kwf_Assets_Dependency_Abstract::DEPENDENCY_TYPE_USES => array(),
@@ -101,8 +159,9 @@ class Kwf_Ext_Assets_Provider extends Kwf_Assets_Provider_Abstract
 
         $aliasClasses = self::_getAliasClasses();
 
-        if (preg_match_all('#^\s*'.'// @require\s+([a-zA-Z0-9\./\-_]+)\s*$#m', $fileContents, $m)) {
-            foreach ($m[1] as $f) {
+        if (preg_match_all('#^\s*'.'// @(require|uses)\s+([a-zA-Z0-9\./\-_]+\*?)\s*$#m', $fileContents, $m)) {
+            foreach ($m[2] as $k=>$f) {
+                $type = ($m[1][$k] == 'uses' ? Kwf_Assets_Dependency_Abstract::DEPENDENCY_TYPE_USES : Kwf_Assets_Dependency_Abstract::DEPENDENCY_TYPE_REQUIRES);
                 if (substr($f, -3) == '.js') {
                     $f = substr($f, 0, -3);
                     $curFile = $dependency->getFileNameWithType();
@@ -115,13 +174,23 @@ class Kwf_Ext_Assets_Provider extends Kwf_Assets_Provider_Abstract
                     if (substr($f, 0, 8) == 'ext.src.') {
                         $f = 'Ext4.'.substr($f, 8);
                     }
+                } else if (substr($f, -2) == '.*') {
+                    foreach ($this->_getRecursiveDeps($f) as $i) {
+                        $deps[$type][] = $i;
+                    }
+                    continue;
                 } else {
                     if (substr($f, 0, 5) == 'Ext4.') {
                         $f = 'Ext.'.substr($f, 5);
                     }
                     if (substr($f, 0, 4) == 'Ext.') {
-                        $f = $aliasClasses[$f];
+                        if (isset($aliasClasses[$f])) {
+                            $f = $aliasClasses[$f];
+                        } else {
+                            $f = 'Ext4.'.substr($f, 4);
+                        }
                     }
+                    if ($f == 'Ext') $f = 'Ext4';
                 }
 
                 if ($dependency->getFileNameWithType() == 'ext/src/util/Offset.js') {
@@ -133,37 +202,53 @@ class Kwf_Ext_Assets_Provider extends Kwf_Assets_Provider_Abstract
                 if ($f) {
                     $d = $this->_providerList->findDependency($f);
                     if (!$d) throw new Kwf_Exception("Can't resolve dependency: require $f");
-                    $deps[Kwf_Assets_Dependency_Abstract::DEPENDENCY_TYPE_REQUIRES][] = $d;
+                    $deps[$type][] = $d;
                 }
             }
         }
+
+        //now that // @require are found remove single-line-comments
+        $fileContents = preg_replace('/(\/\/[^\n]*)/', '', $fileContents);
 
         $classes = array(
             Kwf_Assets_Dependency_Abstract::DEPENDENCY_TYPE_USES => array(),
             Kwf_Assets_Dependency_Abstract::DEPENDENCY_TYPE_REQUIRES => array(),
         );
-        if (preg_match('#Ext4?\.require\(\s*\'([a-zA-Z0-9\.]+)\'#', $fileContents, $m)) {
+        if (preg_match('#Ext4?\.require\(\s*\'([a-zA-Z0-9\.]+\*?)\'#', $fileContents, $m)) {
             $classes['requires'][] = $m[1];
         }
         if (preg_match('#Ext4?\.require\(\s*\[([^]]+\])#', $fileContents, $m)) {
-            if (preg_match_all('#\'([a-zA-Z0-9\._]+)\'#', $m[1], $m2)) {
+            if (preg_match_all('#\'([a-zA-Z0-9\._]+\*?)\'#', $m[1], $m2)) {
                 $classes['requires'] = array_merge($classes['requires'], $m2[1]);
             }
         }
 
         if (preg_match('#Ext4?\.define\(\s*[\'"]#', $fileContents, $m)) {
-            if (preg_match_all('#^\s*(extend|override|requires|mixins|uses)\s*:\s*\'([a-zA-Z0-9\.]+)\'\s*,?\s*$#m', $fileContents, $m)) {
+            if (preg_match_all('#^\s*(extend|override|requires|mixins|uses)\s*:\s*\'([a-zA-Z0-9\.]+\*?)\'\s*,?\s*$#m', $fileContents, $m)) {
                 foreach ($m[2] as $k=>$cls) {
+                    if ($dependency->getFileNameWithType() == 'ext/packages/sencha-core/src/data/reader/Reader.js'
+                        && $cls == 'Ext.data.Model'
+                    ) {
+                        continue;
+                    }
                     $type = ($m[1][$k] == 'uses' ? Kwf_Assets_Dependency_Abstract::DEPENDENCY_TYPE_USES : Kwf_Assets_Dependency_Abstract::DEPENDENCY_TYPE_REQUIRES);
-                    $classes[$type][] = $cls;
+                    if ($m[1][$k] == 'requires') {
+                        array_unshift($classes[$type], $cls);
+                    } else {
+                        $classes[$type][] = $cls;
+                    }
                 }
             }
 
             if (preg_match_all('#^\s*(requires|mixins|uses)\s*:\s*(\[.+?\]|{.+?})\s*,?\s*$#ms', $fileContents, $m)) {
                 foreach ($m[2] as $k=>$i) {
                     $type = ($m[1][$k] == 'uses' ? Kwf_Assets_Dependency_Abstract::DEPENDENCY_TYPE_USES : Kwf_Assets_Dependency_Abstract::DEPENDENCY_TYPE_REQUIRES);
-                    if (preg_match_all('#\'([a-zA-Z0-9\._]+)\'#', $i, $m2)) {
-                        $classes[$type] = array_merge($classes[$type], $m2[1]);
+                    if (preg_match_all('#\'([a-zA-Z0-9\._]+\*?)\'#', $i, $m2)) {
+                        if ($m[1][$k] == 'requires') {
+                            $classes[$type] = array_merge($m2[1], $classes[$type]);
+                        } else {
+                            $classes[$type] = array_merge($classes[$type], $m2[1]);
+                        }
                     }
                 }
             }
@@ -174,6 +259,7 @@ class Kwf_Ext_Assets_Provider extends Kwf_Assets_Provider_Abstract
                     $type = Kwf_Assets_Dependency_Abstract::DEPENDENCY_TYPE_REQUIRES;
                     $t = $m[1][$k];
                     $t = ($t == 'componentLayout') ? 'layout' : $t;
+                    if ($t == 'proxy') $type = Kwf_Assets_Dependency_Abstract::DEPENDENCY_TYPE_USES;
                     $classes[$type][] = $aliasClasses[$t.'.'.$cls];
                 }
             }
@@ -182,34 +268,52 @@ class Kwf_Ext_Assets_Provider extends Kwf_Assets_Provider_Abstract
                     $type = Kwf_Assets_Dependency_Abstract::DEPENDENCY_TYPE_REQUIRES;
                     $t = $m[1][$k];
                     $t = ($t == 'componentLayout') ? 'layout' : $t;
+                    if ($t == 'proxy') $type = Kwf_Assets_Dependency_Abstract::DEPENDENCY_TYPE_USES;
                     $classes[$type][] = $aliasClasses[$t.'.'.$cls];
                 }
             }
         }
-
         foreach ($classes as $type=>$i) {
             foreach ($i as $cls) {
                 if (substr($cls, 0, 5) == 'Ext4.') {
                     $cls = 'Ext.'.substr($cls, 5);
                 }
-                if (substr($cls, 0, 4) == 'Ext.') {
-                    if (!isset($aliasClasses[$cls])) {
-                        throw new Kwf_Exception("Can't resolve dependency: $cls for $dependency");
+                if (substr($cls, -2) == '.*') {
+                    foreach ($this->_getRecursiveDeps($cls) as $d) {
+                        $deps[$type][] = $d;
                     }
-                    $cls = $aliasClasses[$cls];
+                } else {
+                    if (substr($cls, 0, 4) == 'Ext.') {
+                        if (!isset($aliasClasses[$cls])) {
+                            throw new Kwf_Exception("Can't resolve dependency: $cls for $dependency");
+                        }
+                        $cls = $aliasClasses[$cls];
+                    }
+                    $d = $this->_providerList->findDependency($cls);
+                    if (!$d) throw new Kwf_Exception("Can't resolve dependency: extend $cls for $dependency");
+                    $deps[$type][] = $d;
                 }
-                $d = $this->_providerList->findDependency($cls);
-                if (!$d) throw new Kwf_Exception("Can't resolve dependency: extend $cls for $dependency");
-                $deps[$type][] = $d;
             }
         }
 
         if ($dependency->getFileNameWithType() == 'ext/src/panel/Panel.js') {
-            //$deps[Kwf_Assets_Dependency_Abstract::DEPENDENCY_TYPE_REQUIRES][] = new Kwf_Ext_Assets_CssDependency('ext/resources/ext-theme-classic-sandbox/ext-theme-classic-all.css');
-            $deps[Kwf_Assets_Dependency_Abstract::DEPENDENCY_TYPE_REQUIRES][] = new Kwf_Ext_Assets_CssDependency('ext/resources/ext-theme-neptune/ext-theme-neptune-all.css');
+            $deps[Kwf_Assets_Dependency_Abstract::DEPENDENCY_TYPE_REQUIRES][] = new Kwf_Ext_Assets_CssDependency('ext/packages/ext-theme-neptune/build/resources/ext-theme-neptune-all_01.css');
+            $deps[Kwf_Assets_Dependency_Abstract::DEPENDENCY_TYPE_REQUIRES][] = new Kwf_Ext_Assets_CssDependency('ext/packages/ext-theme-neptune/build/resources/ext-theme-neptune-all_02.css');
+            $deps[Kwf_Assets_Dependency_Abstract::DEPENDENCY_TYPE_REQUIRES][] = new Kwf_Ext_Assets_JsDependency('ext/packages/ext-theme-neptune/build/ext-theme-neptune-debug.js');
         }
-        if ($dependency->getFileNameWithType() == 'ext/src/data/Model.js') {
-            $deps[Kwf_Assets_Dependency_Abstract::DEPENDENCY_TYPE_REQUIRES][] = $this->_providerList->findDependency('Ext4.data.proxy.Ajax');
+
+
+        $additionalDeps = array();
+        if ($dependency->getFileNameWithType() == 'ext/src/Component.js') {
+            $additionalDeps[] = 'Ext4.plugin.Manager';
+        } else if ($dependency->getFileNameWithType() == 'ext/src/app/Application.js') {
+            $additionalDeps[] = 'Ext4.app.ViewModel';
+            $additionalDeps[] = 'Ext4.class.Loader';
+        }
+        foreach ($additionalDeps as $i) {
+            $d = $this->_providerList->findDependency($i);
+            if (!$d) throw new Kwf_Exception("Can't resolve dependency: '$i'");
+            array_unshift($deps[Kwf_Assets_Dependency_Abstract::DEPENDENCY_TYPE_REQUIRES], $d);
         }
 
         return $deps;

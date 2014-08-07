@@ -7,7 +7,8 @@ class Kwf_Ext_Assets_ProviderTest extends PHPUnit_Framework_TestCase
         $d = $l->findDependency('Ext4.util.Observable');
         $this->assertNotNull($d);
         $array = $d->getRecursiveFiles();
-        $this->assertEquals(25, count($array));
+        $this->assertContains('ext/packages/sencha-core/src/util/Observable.js', $array);
+        $this->assertEquals(78, count($array));
     }
 
     public function testDepOnObservable()
@@ -16,7 +17,8 @@ class Kwf_Ext_Assets_ProviderTest extends PHPUnit_Framework_TestCase
         $d = $l->findDependency('Ext4.util.ClickRepeater');
         $this->assertNotNull($d);
         $array = $d->getRecursiveFiles();
-        $this->assertEquals(26, count($array));
+        $this->assertContains('ext/packages/sencha-core/src/util/Observable.js', $array);
+        $this->assertEquals(79, count($array));
     }
 
     public function testOwnClsByIni()
@@ -70,7 +72,7 @@ class Kwf_Ext_Assets_ProviderTest extends PHPUnit_Framework_TestCase
         $d = $l->findDependency('Ext4.EventManager');
         $this->assertNotNull($d);
         $array = $d->getRecursiveFiles();
-        $this->assertEquals(24, count($array));
+        $this->assertContains('ext/src/EventManager.js', $array);
     }
 
     public function testExtElement()
@@ -79,7 +81,9 @@ class Kwf_Ext_Assets_ProviderTest extends PHPUnit_Framework_TestCase
         $d = $l->findDependency('Ext4.dom.Element');
         $this->assertNotNull($d);
         $array = $d->getRecursiveFiles();
-        $this->assertEquals(45, count($array));
+        $this->assertContains('ext/packages/sencha-core/src/dom/Element.js', $array);
+        $this->assertContains('ext/overrides/dom/Element.js', $array);
+        $this->assertContains('ext/packages/sencha-core/src/dom/Fly.js', $array);
     }
 
     public function testExtFormat()
@@ -88,7 +92,7 @@ class Kwf_Ext_Assets_ProviderTest extends PHPUnit_Framework_TestCase
         $d = $l->findDependency('Ext4.util.Format');
         $this->assertNotNull($d);
         $array = $d->getRecursiveFiles();
-        $this->assertEquals(16, count($array));
+        $this->assertContains('ext/packages/sencha-core/src/util/Format.js', $array);
     }
 
     public function testExtUtilHashMap()
@@ -97,7 +101,7 @@ class Kwf_Ext_Assets_ProviderTest extends PHPUnit_Framework_TestCase
         $d = $l->findDependency('Ext4.util.HashMap');
         $this->assertNotNull($d);
         $array = $d->getRecursiveFiles();
-        $this->assertEquals(26, count($array));
+        $this->assertContains('ext/packages/sencha-core/src/util/HashMap.js', $array);
     }
 
     public function testExtUtilDelayedTask()
@@ -106,7 +110,7 @@ class Kwf_Ext_Assets_ProviderTest extends PHPUnit_Framework_TestCase
         $d = $l->findDependency('Ext4.util.DelayedTask');
         $this->assertNotNull($d);
         $array = $d->getRecursiveFiles();
-        $this->assertEquals(22, count($array));
+        $this->assertContains('ext/packages/sencha-core/src/util/DelayedTask.js', $array);
     }
 
     public function testExtXTemplate()
@@ -115,7 +119,8 @@ class Kwf_Ext_Assets_ProviderTest extends PHPUnit_Framework_TestCase
         $d = $l->findDependency('Ext4.XTemplate');
         $this->assertNotNull($d);
         $array = $d->getRecursiveFiles();
-        $this->assertEquals(40, count($array));
+        $this->assertContains('ext/packages/sencha-core/src/Template.js', $array);
+        $this->assertContains('ext/packages/sencha-core/src/XTemplate.js', $array);
     }
 
     public function testExtWindow()
@@ -124,7 +129,8 @@ class Kwf_Ext_Assets_ProviderTest extends PHPUnit_Framework_TestCase
         $d = $l->findDependency('Ext4.window.Window');
         $this->assertNotNull($d);
         $array = $d->getRecursiveFiles();
-        $this->assertEquals(197, count($array));
+        $this->assertContains('ext/src/window/Window.js', $array);
+        $this->assertContains('ext/src/panel/Panel.js', $array);
     }
 
     public function testRequire()
@@ -142,16 +148,20 @@ class Kwf_Ext_Assets_ProviderTest extends PHPUnit_Framework_TestCase
         $d = $l->findDependency('Ext4.data.Model');
         $this->assertNotNull($d);
         $array = $d->getRecursiveFiles();
-        $this->assertEquals(71, count($array));
+        $this->assertContains('ext/packages/sencha-core/src/data/Model.js', $array);
     }
 
-    public function testModelProxy()
+    public function testProxyDep()
     {
         $l = new Kwf_Ext_Assets_TestProviderList();
-        $d = $l->findDependency('Kwf.Ext.Assets.TestModel');
+        $d = $l->findDependency('Ext4.data.proxy.Proxy');
         $this->assertNotNull($d);
-        $array = $d->getRecursiveFiles();
-        $this->assertEquals(73, count($array));
+        $array = $d->getFilteredUniqueDependencies('text/javascript');
+        $idxServer = array_search('ext/packages/sencha-core/src/data/proxy/Server.js', $array);
+        $this->assertTrue($idxServer !== false);
+        $idxProxy = array_search('ext/packages/sencha-core/src/data/proxy/Proxy.js', $array);
+        $this->assertTrue($idxProxy !== false);
+        $this->assertTrue($idxProxy < $idxServer, 'proxy must be loaded before server');
     }
 
     public function testModelProxy2()
