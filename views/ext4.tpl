@@ -48,12 +48,5 @@
     <?php if (isset($this->sessionToken)) { ?>
     Kwf.sessionToken = '<?= $this->sessionToken ?>';
     <?php } ?>
-    //Ext5: Ext4.application('App.controller.<?=$this->extController?>');
-    Ext4.application({
-        name: 'App',
-        controllers: ['<?=$this->extController?>'],
-        launch: function() {
-            Ext4.get('loading').fadeOut({remove: true});
-        }
-    });
+    Ext4.application('App.controller.<?=$this->extController?>');
     </script>
