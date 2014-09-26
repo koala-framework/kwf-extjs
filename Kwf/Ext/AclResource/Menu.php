@@ -1,5 +1,6 @@
 <?php
-class Kwf_Ext_AclResource_Menu extends Kwf_Acl_Resource_Abstract implements Kwf_Acl_Resource_Interface_Url
+class Kwf_Ext_AclResource_Menu extends Kwf_Acl_Resource_Abstract
+    implements Kwf_Acl_Resource_Interface_Url, Kwf_Ext_AclResource_Interface
 {
     private $_extController;
 
