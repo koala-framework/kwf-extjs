@@ -116,12 +116,8 @@ class Kwf_Ext_Assets_Provider extends Kwf_Assets_Provider_Abstract
                         $f = 'Ext4.'.substr($f, 8);
                     }
                 } else {
-                    if (substr($f, 0, 5) == 'Ext4.') {
-                        $f = 'Ext.'.substr($f, 5);
-                    }
-                    if (substr($f, 0, 4) == 'Ext.') {
-                        $f = $aliasClasses[$f];
-                    }
+                    //ignore, that is handled by Kwf_Assets_Provider_AtRequires
+                    continue;
                 }
 
                 if ($dependency->getFileNameWithType() == 'ext/src/util/Offset.js') {
@@ -189,14 +185,8 @@ class Kwf_Ext_Assets_Provider extends Kwf_Assets_Provider_Abstract
 
         foreach ($classes as $type=>$i) {
             foreach ($i as $cls) {
-                if (substr($cls, 0, 5) == 'Ext4.') {
-                    $cls = 'Ext.'.substr($cls, 5);
-                }
                 if (substr($cls, 0, 4) == 'Ext.') {
-                    if (!isset($aliasClasses[$cls])) {
-                        throw new Kwf_Exception("Can't resolve dependency: $cls for $dependency");
-                    }
-                    $cls = $aliasClasses[$cls];
+                    $cls = 'Ext4.'.substr($cls, 4);
                 }
                 $d = $this->_providerList->findDependency($cls);
                 if (!$d) throw new Kwf_Exception("Can't resolve dependency: extend $cls for $dependency");
@@ -213,5 +203,20 @@ class Kwf_Ext_Assets_Provider extends Kwf_Assets_Provider_Abstract
         }
 
         return $deps;
+    }
+
+    public function getDependencyNameByAlias($aliasDependencyName)
+    {
+        if (substr($aliasDependencyName, 0, 5) == 'Ext4.') {
+            $aliasDependencyName = 'Ext.'.substr($aliasDependencyName, 5);
+        }
+
+        if (substr($aliasDependencyName, 0, 4) == 'Ext.') {
+            $aliasClasses = self::_getAliasClasses();
+            if (isset($aliasClasses[$aliasDependencyName])) {
+                $aliasDependencyName = $aliasClasses[$aliasDependencyName];
+                return $aliasDependencyName;
+            }
+        }
     }
 }
