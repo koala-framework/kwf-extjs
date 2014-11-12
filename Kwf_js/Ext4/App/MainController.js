@@ -18,11 +18,14 @@ Ext4.define('Kwf.Ext4.App.MainController', {
         if (!this.mainPanel || !(this.mainPanel instanceof Ext4.panel.Panel)) {
             throw new Error("mainPanel is required and must be an Ext4.panel.Panel");
         }
-        this.viewport = Ext4.create('Kwf.Ext4.Viewport', {
-            items: [this.mainPanel]
-        });
 
         Ext4.get('loading').fadeOut({remove: true});
+
+        if (!this.viewport) {
+            this.viewport = Ext4.create('Kwf.Ext4.Viewport', {
+                items: [this.mainPanel]
+            });
+        }
     },
 
     onBeforeLaunch: function()

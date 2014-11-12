@@ -180,17 +180,8 @@ class Kwf_Ext_Assets_Provider extends Kwf_Assets_Provider_Abstract
                     }
                     continue;
                 } else {
-                    if (substr($f, 0, 5) == 'Ext4.') {
-                        $f = 'Ext.'.substr($f, 5);
-                    }
-                    if (substr($f, 0, 4) == 'Ext.') {
-                        if (isset($aliasClasses[$f])) {
-                            $f = $aliasClasses[$f];
-                        } else {
-                            $f = 'Ext4.'.substr($f, 4);
-                        }
-                    }
-                    if ($f == 'Ext') $f = 'Ext4';
+                    //ignore, that is handled by Kwf_Assets_Provider_AtRequires
+                    continue;
                 }
 
                 if ($dependency->getFileNameWithType() == 'ext/src/util/Offset.js') {
@@ -317,5 +308,20 @@ class Kwf_Ext_Assets_Provider extends Kwf_Assets_Provider_Abstract
         }
 
         return $deps;
+    }
+
+    public function getDependencyNameByAlias($aliasDependencyName)
+    {
+        if (substr($aliasDependencyName, 0, 5) == 'Ext4.') {
+            $aliasDependencyName = 'Ext.'.substr($aliasDependencyName, 5);
+        }
+
+        if (substr($aliasDependencyName, 0, 4) == 'Ext.') {
+            $aliasClasses = self::_getAliasClasses();
+            if (isset($aliasClasses[$aliasDependencyName])) {
+                $aliasDependencyName = $aliasClasses[$aliasDependencyName];
+                return $aliasDependencyName;
+            }
+        }
     }
 }
