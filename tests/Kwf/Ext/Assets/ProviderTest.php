@@ -79,7 +79,7 @@ class Kwf_Ext_Assets_ProviderTest extends PHPUnit_Framework_TestCase
         $d = $l->findDependency('Ext4.dom.Element');
         $this->assertNotNull($d);
         $array = $d->getRecursiveFiles();
-        $this->assertEquals(45, count($array));
+        $this->assertEquals(47, count($array));
     }
 
     public function testExtFormat()
@@ -115,7 +115,7 @@ class Kwf_Ext_Assets_ProviderTest extends PHPUnit_Framework_TestCase
         $d = $l->findDependency('Ext4.XTemplate');
         $this->assertNotNull($d);
         $array = $d->getRecursiveFiles();
-        $this->assertEquals(40, count($array));
+        $this->assertEquals(51, count($array));
     }
 
     public function testExtWindow()
@@ -142,7 +142,7 @@ class Kwf_Ext_Assets_ProviderTest extends PHPUnit_Framework_TestCase
         $d = $l->findDependency('Ext4.data.Model');
         $this->assertNotNull($d);
         $array = $d->getRecursiveFiles();
-        $this->assertEquals(71, count($array));
+        $this->assertEquals(82, count($array));
     }
 
     public function testModelProxy()
@@ -151,7 +151,7 @@ class Kwf_Ext_Assets_ProviderTest extends PHPUnit_Framework_TestCase
         $d = $l->findDependency('Kwf.Ext.Assets.TestModel');
         $this->assertNotNull($d);
         $array = $d->getRecursiveFiles();
-        $this->assertEquals(73, count($array));
+        $this->assertEquals(84, count($array));
     }
 
     public function testModelProxy2()
@@ -160,7 +160,7 @@ class Kwf_Ext_Assets_ProviderTest extends PHPUnit_Framework_TestCase
         $d = $l->findDependency('Kwf.Ext.Assets.TestModel2');
         $this->assertNotNull($d);
         $array = $d->getRecursiveFiles();
-        $this->assertEquals(73, count($array));
+        $this->assertEquals(84, count($array));
     }
 
     /*

@@ -9,6 +9,7 @@ class Kwf_Ext_Assets_TestProviderList extends Kwf_Assets_ProviderList_Abstract
         $providers[] = new Kwf_Assets_Provider_JsClass(getcwd(), 'kwfext', 'kwfext'); //for @require (sub optimal)
         $providers[] = new Kwf_Assets_Provider_JsClass(getcwd().'/tests/Kwf/Ext', 'kwfext/tests/Kwf/Ext', 'Kwf.Ext');
         $providers[] = new Kwf_Assets_Provider_Ini(dirname(__FILE__).'/ProviderTestDependencies.ini');
+        $providers[] = new Kwf_Assets_Provider_AtRequires();
         parent::__construct($providers);
     }
 }

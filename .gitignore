@@ -1,2 +1,5 @@
 vendor
 *.kdev4
+/bower.json
+/.bowerrc
+
