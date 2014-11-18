@@ -11,7 +11,7 @@ class Kwf_Ext_Assets_TestWindow_Test extends PHPUnit_Framework_TestCase
             }
         }
 
-        $cmd = "phantomjs vendor/bower_components/qunit-phantomjs-runner/runner.js ";
+        $cmd = "phantomjs --web-security=false vendor/bower_components/qunit-phantomjs-runner/runner.js ";
         $cmd .= "http://".Kwf_Config::getValue('server.domain').Kwf_Setup::getBaseUrl()."/kwf_ext_assets_test-window_test 20";
         $cmd .= " 2>&1";
         $out = array();
