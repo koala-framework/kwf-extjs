@@ -27,10 +27,12 @@ Ext4.define('Kwf.Ext4.Menu', {
     },
     reload: function()
     {
+        var params = {};
+        if (Kwf.sessionToken) params.kwfSessionToken = Kwf.sessionToken;
         Ext4.Ajax.request({
             url: this.controllerUrl+'/json-data',
             method: 'GET',
-            params: this.params,
+            params: params,
             success: this.loadMenu,
             scope: this
         });
