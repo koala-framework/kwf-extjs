@@ -170,7 +170,7 @@ class Kwf_Ext_Assets_ProviderTest extends PHPUnit_Framework_TestCase
         $d = $l->findDependency('Kwf.Ext.Assets.TestModel2');
         $this->assertNotNull($d);
         $array = $d->getRecursiveFiles();
-        $this->assertEquals(73, count($array));
+        $this->assertEquals(84, count($array));
     }
 
     /*
