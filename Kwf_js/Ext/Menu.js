@@ -24,10 +24,12 @@ Ext.define('Kwf.Ext.Menu', {
     },
     reload: function()
     {
+        var params = {};
+        if (Kwf.sessionToken) params.kwfSessionToken = Kwf.sessionToken;
         Ext.Ajax.request({
             url: this.controllerUrl+'/json-data',
             method: 'GET',
-            params: this.params,
+            params: params,
             success: this.loadMenu,
             scope: this
         });
