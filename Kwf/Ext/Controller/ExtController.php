@@ -1,5 +1,5 @@
 <?php
-class Kwf_Ext_Controller_Ext4Controller extends Zend_Controller_Action
+class Kwf_Ext_Controller_ExtController extends Zend_Controller_Action
 {
     public function indexAction()
     {

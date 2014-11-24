@@ -3,12 +3,12 @@ QUnit.asyncTest( "Test Lazy Load", function( assert ) {
   expect( 2 );
 
 
-    Kwf.Loader.require('Ext4.panel.Panel', function() {
-        Kwf.Loader.require('Ext4.grid.Panel', function() {
-            Kwf.Loader.require('Ext4.tree.Panel', function() {
+    Kwf.Loader.require('Ext.panel.Panel', function() {
+        Kwf.Loader.require('Ext.grid.Panel', function() {
+            Kwf.Loader.require('Ext.tree.Panel', function() {
             });
-            Kwf.Loader.require('Ext4.window.Window', function() {
-                var w = new Ext4.window.Window({
+            Kwf.Loader.require('Ext.window.Window', function() {
+                var w = new Ext.window.Window({
                     title: 'windowtitle',
                     html: 'windowcontent 123 123 123'
                 });
@@ -16,7 +16,7 @@ QUnit.asyncTest( "Test Lazy Load", function( assert ) {
             });
         });
     });
-    Kwf.Loader.require('Ext4.panel.Panel', function() {
+    Kwf.Loader.require('Ext.panel.Panel', function() {
     });
 
     var tries = 0;

@@ -1,12 +1,12 @@
-Ext4.define('Kwf.Ext4.Viewport', {
+Ext.define('Kwf.Ext.Viewport', {
     extend: 'Ext.container.Viewport',
-    requires: ['Kwf.Ext4.Menu', 'Ext.layout.container.Border'],
+    requires: ['Kwf.Ext.Menu', 'Ext.layout.container.Border'],
     layout: 'border',
     menu: null,
     initComponent : function() {
         this.items[0].region = 'center';
         if (!this.menu) {
-            this.menu = Ext4.create('Kwf.Ext4.Menu', {
+            this.menu = Ext.create('Kwf.Ext.Menu', {
                 region: 'north',
                 height: 35,
                 border: false

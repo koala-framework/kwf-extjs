@@ -17,6 +17,6 @@ class Kwf_Ext_AclResource_Menu extends Kwf_Acl_Resource_Abstract
 
     public function getMenuUrl()
     {
-        return '/kwf/ext4/'.$this->getResourceId();
+        return '/kwf/ext/'.$this->getResourceId();
     }
 }

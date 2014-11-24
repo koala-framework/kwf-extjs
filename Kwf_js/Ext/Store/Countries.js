@@ -1,7 +1,7 @@
-Ext4.define('Kwf.Ext4.Store.Countries', {
+Ext.define('Kwf.Ext.Store.Countries', {
     extend: 'Ext.data.Store',
-    requires: [ 'Kwf.Ext4.Store.CountriesModel', 'Kwf.CountriesData' ],
-    model: 'Kwf.Ext4.Store.CountriesModel',
+    requires: [ 'Kwf.Ext.Store.CountriesModel', 'Kwf.CountriesData' ],
+    model: 'Kwf.Ext.Store.CountriesModel',
     proxy: null,
     sorters: [{
          property: 'name',

@@ -1,14 +1,14 @@
-Ext4.define('Kwf.Ext4.Menu', {
+Ext.define('Kwf.Ext.Menu', {
     extend: 'Ext.toolbar.Toolbar',
     requires: [
         'Ext.toolbar.Fill',
         'Ext.toolbar.Spacer'
     ],
-    cls: 'kwf-ext4-menu',
+    cls: 'kwf-ext-menu',
 
     controllerUrl: '/kwf/user/menu',
     changeUserTpl: ['<tpl for=".">',
-                        '<div class="x4-combo-list-item changeuser-list-item<tpl if="locked != 0"> changeuser-locked</tpl>">',
+                        '<div class="x-combo-list-item changeuser-list-item<tpl if="locked != 0"> changeuser-locked</tpl>">',
                             '<h3>{lastname}&nbsp;{firstname}</h3>',
                             '{email} <span class="changeuser-role">({role})</span>',
                         '</div>',
@@ -24,7 +24,7 @@ Ext4.define('Kwf.Ext4.Menu', {
     },
     reload: function()
     {
-        Ext4.Ajax.request({
+        Ext.Ajax.request({
             url: this.controllerUrl+'/json-data',
             method: 'GET',
             params: this.params,
@@ -40,7 +40,7 @@ Ext4.define('Kwf.Ext4.Menu', {
             var subMenu = m.menuConfig;
             if (m.type == 'dropdown') {
                 var childMenuItems = this._processMenus(m.children);
-                var menu = new Ext4.menu.Menu({
+                var menu = new Ext.menu.Menu({
                     items: childMenuItems
                 });
                 subMenu.menu = menu;
@@ -80,24 +80,24 @@ Ext4.define('Kwf.Ext4.Menu', {
     },
     loadMenu: function(response, options)
     {
-        var result = Ext4.JSON.decode(response.responseText);
+        var result = Ext.JSON.decode(response.responseText);
 
         this.items.each(function(i) {
             i.destroy();
         });
         var menuItems = this._processMenus(result.menus);
-        Ext4.each(menuItems, function(menuItem) {
+        Ext.each(menuItems, function(menuItem) {
             if (menuItem.icon && menuItem.text) {
-                menuItem.cls = 'x4-btn-text-icon';
+                menuItem.cls = 'x-btn-text-icon';
             } else if (menuItem.icon) {
-                menuItem.cls = 'x4-btn-icon';
+                menuItem.cls = 'x-btn-icon';
             }
             this.add(menuItem);
         }, this);
-        this.add(new Ext4.toolbar.Fill());
+        this.add(new Ext.toolbar.Fill());
         this.loadingAnim = this.add({
             xtype: 'component',
-            cls: Ext4.baseCSSPrefix + 'mask-msg-text ext4-maincontroller-loading',
+            cls: Ext.baseCSSPrefix + 'mask-msg-text ext-maincontroller-loading',
             height: 16,
             width: 16,
             renderTpl: '<div class=\"icon\"></div>',
@@ -107,10 +107,10 @@ Ext4.define('Kwf.Ext4.Menu', {
         /*
         TODO: port rest of this file to ext4
 
-        this.showUserMenu = new Ext4.Button({
+        this.showUserMenu = new Ext.Button({
             id: 'userMenu',
             tooltip: trlKwf('Show User Menu'),
-            cls: 'x4-btn-icon',
+            cls: 'x-btn-icon',
             icon: '/assets/silkicons/bullet_arrow_down.png',
             handler: function() {
                 if (!this.userToolbar.isVisible()) {
@@ -139,7 +139,7 @@ Ext4.define('Kwf.Ext4.Menu', {
                 width: 120,
                 maxHeight: 350,
                 listWidth: 280,
-                tpl: new Ext4.XTemplate(
+                tpl: new Ext.XTemplate(
                         this.changeUserTpl
                       )
             });
@@ -147,7 +147,7 @@ Ext4.define('Kwf.Ext4.Menu', {
                 combo.setRawValue(result.fullname);
             }, this, {delay: 10});
             changeUser.on('select', function(combo, record, index) {
-                Ext4.Ajax.request({
+                Ext.Ajax.request({
                     url: '/kwf/user/changeUser/json-change-user',
                     params: { userId: record.id },
                     success: function() {
@@ -162,7 +162,7 @@ Ext4.define('Kwf.Ext4.Menu', {
             this.add('-');
         }
 
-        this.userToolbar = new Ext4.Toolbar({
+        this.userToolbar = new Ext.Toolbar({
             renderTo: this.el,
             style: 'position:absolute;right:0'
         });
@@ -171,7 +171,7 @@ Ext4.define('Kwf.Ext4.Menu', {
             this.userToolbar.add({
                 id: 'currentUser',
                 text: result.fullname,
-                cls: 'x4-btn-text-icon',
+                cls: 'x-btn-text-icon',
                 icon: '/assets/silkicons/user.png',
                 disabled: !result.userId,
                 handler: function() {
@@ -191,11 +191,11 @@ Ext4.define('Kwf.Ext4.Menu', {
         */
         if (result.showLogout) {
             this.add({
-                cls: 'x4-btn-icon',
+                cls: 'x-btn-icon',
                 tooltip: trlKwf('Logout'),
                 icon: '/assets/silkicons/door_out.png',
                 handler: function() {
-                    Ext4.Ajax.request({
+                    Ext.Ajax.request({
                         url : '/kwf/user/login/json-logout-user',
                         success : function(form, action) {
                             //nicht reload, weil user nach erneutem login vielleicht
@@ -210,7 +210,7 @@ Ext4.define('Kwf.Ext4.Menu', {
         }
         /*
         this.userToolbar.add({
-            cls: 'x4-btn-icon',
+            cls: 'x-btn-icon',
             icon: '/assets/kwf/images/information.png',
             tooltip: trlKwf('Information'),
             handler: function() {
@@ -227,7 +227,7 @@ Ext4.define('Kwf.Ext4.Menu', {
             //single frontend urls
             this.add({
                 tooltip: trlKwf('Open frontend in a new window'),
-                cls: 'x4-btn-icon',
+                cls: 'x-btn-icon',
                 icon: '/assets/silkicons/world.png',
                 handler: function() {
                     window.open(result.frontendUrls[0].href);
@@ -240,7 +240,7 @@ Ext4.define('Kwf.Ext4.Menu', {
             result.frontendUrls.each(function(url) {
                 frontendItems.push({
                     text: url.text,
-                    cls: 'x4-btn-text-icon',
+                    cls: 'x-btn-text-icon',
                     icon: '/assets/silkicons/world.png',
                     tooltip: trlKwf('Open frontend in a new window'),
                     handler: function(options) {
@@ -252,9 +252,9 @@ Ext4.define('Kwf.Ext4.Menu', {
             }, this);
             this.add({
                 tooltip: trlKwf('Open frontend in a new window'),
-                cls: 'x4-btn-icon',
+                cls: 'x-btn-icon',
                 icon: '/assets/silkicons/world.png',
-                menu: new Ext4.menu.Menu({
+                menu: new Ext.menu.Menu({
                     items: frontendItems
                 })
             });

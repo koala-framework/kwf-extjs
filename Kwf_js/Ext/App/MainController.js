@@ -1,11 +1,11 @@
-Ext4.define('Kwf.Ext4.App.MainController', {
+Ext.define('Kwf.Ext.App.MainController', {
     extend: 'Ext.app.Application',
     /*$namespace: 'App',*/
     name: 'App',
     requires: [
         'Ext.state.LocalStorageProvider',
         'Ext.state.Manager',
-        'Kwf.Ext4.Viewport'
+        'Kwf.Ext.Viewport'
     ],
     mainPanel: null,
     viewport: null,
@@ -15,14 +15,14 @@ Ext4.define('Kwf.Ext4.App.MainController', {
     {
         this.callParent(arguments);
 
-        if (!this.mainPanel || !(this.mainPanel instanceof Ext4.panel.Panel)) {
-            throw new Error("mainPanel is required and must be an Ext4.panel.Panel");
+        if (!this.mainPanel || !(this.mainPanel instanceof Ext.panel.Panel)) {
+            throw new Error("mainPanel is required and must be an Ext.panel.Panel");
         }
 
-        Ext4.get('loading').fadeOut({remove: true});
+        Ext.get('loading').fadeOut({remove: true});
 
         if (!this.viewport) {
-            this.viewport = Ext4.create('Kwf.Ext4.Viewport', {
+            this.viewport = Ext.create('Kwf.Ext.Viewport', {
                 items: [this.mainPanel]
             });
         }
@@ -30,16 +30,16 @@ Ext4.define('Kwf.Ext4.App.MainController', {
 
     onBeforeLaunch: function()
     {
-        if (Ext4.supports.LocalStorage) {
-            Ext4.state.Manager.setProvider(new Ext4.state.LocalStorageProvider());
+        if (Ext.supports.LocalStorage) {
+            Ext.state.Manager.setProvider(new Ext.state.LocalStorageProvider());
         }
-        Ext4.Ajax.disableCaching = false;
-        if (!Ext4.Ajax.extraParams) Ext4.Ajax.extraParams = {};
-        if (Kwf.sessionToken) Ext4.Ajax.extraParams.kwfSessionToken = Kwf.sessionToken;
-        Ext4.Ajax.extraParams.applicationAssetsVersion = Kwf.application.assetsVersion;
-        Ext4.Ajax.on('beforerequest', this.beforeAjaxRequest, this);
-        Ext4.Ajax.on('requestcomplete', this.onAjaxRequestComplete, this);
-        Ext4.Ajax.on('requestexception', this.onAjaxRequestException, this);
+        Ext.Ajax.disableCaching = false;
+        if (!Ext.Ajax.extraParams) Ext.Ajax.extraParams = {};
+        if (Kwf.sessionToken) Ext.Ajax.extraParams.kwfSessionToken = Kwf.sessionToken;
+        Ext.Ajax.extraParams.applicationAssetsVersion = Kwf.application.assetsVersion;
+        Ext.Ajax.on('beforerequest', this.beforeAjaxRequest, this);
+        Ext.Ajax.on('requestcomplete', this.onAjaxRequestComplete, this);
+        Ext.Ajax.on('requestexception', this.onAjaxRequestException, this);
 
         this.callParent(arguments);
     },
@@ -60,7 +60,7 @@ Ext4.define('Kwf.Ext4.App.MainController', {
     {
         if (options.method != 'GET') {
             this._runningRequests--;
-            Ext4.defer(function() {
+            Ext.defer(function() {
                 if (this._runningRequests == 0) {
                     if (this.viewport && this.viewport.menu && this.viewport.menu.loadingAnim) {
                         this.viewport.menu.loadingAnim.el.child('.icon').animate({
@@ -94,17 +94,17 @@ Ext4.define('Kwf.Ext4.App.MainController', {
     {
         this.afterAjaxRequest(conn, response, options);
 
-        var r = Ext4.decode(response.responseText, true);
+        var r = Ext.decode(response.responseText, true);
         if (response.status == 401) {
             var msg = trlKwf('Session expired, please re-login.');
             if (r && r.role && r.role != 'guest') {
                 msg = trlKwf("You don't have enough permissions for this Action");
             }
-            Ext4.Msg.alert(trlKwf('Login'), msg, function() {
+            Ext.Msg.alert(trlKwf('Login'), msg, function() {
                 location.reload();
             })
         } else if (response.status == 428) {
-            var dlg = new Ext4.window.Window({
+            var dlg = new Ext.window.Window({
                 autoCreate : true,
                 title: trlKwf('Error - wrong version'),
                 resizable: false,
@@ -124,7 +124,7 @@ Ext4.define('Kwf.Ext4.App.MainController', {
             });
             dlg.show();
         } else {
-            Ext4.Msg.alert(trlKwf('Error'), trlKwf('A Server failure occured.'));
+            Ext.Msg.alert(trlKwf('Error'), trlKwf('A Server failure occured.'));
             if (response.status != 500) {
                 throw new Error('Request failed: '+response.status + ' '+response.statusText);
             }

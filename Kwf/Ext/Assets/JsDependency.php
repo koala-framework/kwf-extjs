@@ -8,16 +8,17 @@ class Kwf_Ext_Assets_JsDependency extends Kwf_Assets_Dependency_File_Js
             $ret .= "\n";
         }
         if ($this->getFileNameWithType() == 'ext/packages/sencha-core/src/Ext.js') {
-            $ret = "Ext.sandboxName = 'Ext4';\n".$ret;
-            $ret = "Ext.isSandboxed = true;\n".$ret;
-            $ret = "Ext.buildSettings = { baseCSSPrefix: \"x4-\", scopeResetCSS: true };\n".$ret;
+//             $ret = "Ext.sandboxName = 'Ext4';\n".$ret;
+//             $ret = "Ext.isSandboxed = true;\n".$ret;
+//             $ret = "Ext.buildSettings = { baseCSSPrefix: \"x4-\", scopeResetCSS: true };\n".$ret;
         } else if ($this->getFileNameWithType() == 'ext/packages/sencha-core/src/class/Loader.js') {
             $ret .= "\n";
             $ret .= "Ext.Loader.setConfig({\n";
             $ret .= "    enabled: false\n";
             $ret .= "});\n";
+
+            $ret = "Ext.manifest = null;\n".$ret;
         }
-        $ret = "(function(Ext) {".$ret."})(this.Ext4 || (this.Ext4 = {}));";
         return $ret;
     }
 }

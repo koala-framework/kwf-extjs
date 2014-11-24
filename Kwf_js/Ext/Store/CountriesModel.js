@@ -1,4 +1,4 @@
-Ext4.define('Kwf.Ext4.Store.CountriesModel', {
+Ext.define('Kwf.Ext.Store.CountriesModel', {
     extend: 'Ext.data.Model',
     requires: ['Ext.data.UuidGenerator'],
     idProperty: 'id',

@@ -1,2 +1,2 @@
-Ext4.define('Kwf.Ext.Assets.TestCls', {
+Ext.define('Kwf.Ext.Assets.TestCls', {
 });

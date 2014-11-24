@@ -3,7 +3,7 @@ class Kwf_Ext_Assets_AclControllerProvider extends Kwf_Assets_Provider_Abstract
 {
     public function getDependency($dependencyName)
     {
-        if ($dependencyName == 'Ext4AclController') {
+        if ($dependencyName == 'ExtAclController') {
             $deps = array();
             foreach (Kwf_Acl::getInstance()->getAllResources() as $r) {
                 if ($r instanceof Kwf_Ext_AclResource_Interface) {
@@ -16,7 +16,7 @@ class Kwf_Ext_Assets_AclControllerProvider extends Kwf_Assets_Provider_Abstract
                 }
             }
             if ($deps) {
-                array_unshift($deps, $this->_providerList->findDependency('Ext4.app.Application'));
+                array_unshift($deps, $this->_providerList->findDependency('Ext.app.Application'));
             }
             return new Kwf_Assets_Dependency_Dependencies($deps, $dependencyName);
         }
