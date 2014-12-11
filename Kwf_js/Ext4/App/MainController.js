@@ -33,6 +33,7 @@ Ext4.define('Kwf.Ext4.App.MainController', {
         Ext4.Ajax.on('beforerequest', this.beforeAjaxRequest, this);
         Ext4.Ajax.on('requestcomplete', this.onAjaxRequestComplete, this);
         Ext4.Ajax.on('requestexception', this.onAjaxRequestException, this);
+        window.onbeforeunload = this.beforeUnload.bind(this);
     },
 
     beforeAjaxRequest: function(conn, options)
@@ -119,6 +120,22 @@ Ext4.define('Kwf.Ext4.App.MainController', {
             if (response.status != 500) {
                 throw new Error('Request failed: '+response.status + ' '+response.statusText);
             }
+        }
+    },
+
+    beforeUnload: function()
+    {
+        var isDirty = false;
+        Ext4.each(this.mainPanel.query('*'), function(i) {
+            if (i.getController && i.getController().isBindableController) {
+                if (i.getController().isDirty()) {
+                    isDirty = true;
+                    return false;
+                }
+            }
+        }, this);
+        if (isDirty) {
+            return trlKwf("You have made changes, are you sure you would like to navigate away from the page?");
         }
     }
 });
