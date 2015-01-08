@@ -33,7 +33,10 @@ Ext4.define('Kwf.Ext4.App.MainController', {
         Ext4.Ajax.on('beforerequest', this.beforeAjaxRequest, this);
         Ext4.Ajax.on('requestcomplete', this.onAjaxRequestComplete, this);
         Ext4.Ajax.on('requestexception', this.onAjaxRequestException, this);
-        window.onbeforeunload = this.beforeUnload.bind(this);
+        if ('onbeforeunload' in window && typeof window['onbeforeunload'] === 'function') {
+            // onbeforeunload is supported
+            window.onbeforeunload = this.beforeUnload.bind(this);
+        }
     },
 
     beforeAjaxRequest: function(conn, options)
