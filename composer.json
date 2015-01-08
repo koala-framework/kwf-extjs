@@ -12,7 +12,8 @@
     },
     "extra": {
         "require-bower": {
-            "extjs": "4.2.1-883"
+            "extjs": "4.2.1-883",
+            "moxie": "1.2.1"
         },
         "require-dev-bower": {
             "qunit": "1.14.0",
