@@ -226,7 +226,7 @@ Ext4.define('Kwf.Ext4.form.field.File', {
                 },
                 scope: this
             });
-        } else {
+        } else if (this.rendered) {
             this.removeCls('file-uploaded');
             this.uploadRow = false;
             this.infoContainer.update('');
