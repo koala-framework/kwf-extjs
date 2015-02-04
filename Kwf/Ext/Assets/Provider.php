@@ -18,7 +18,7 @@ class Kwf_Ext_Assets_Provider extends Kwf_Assets_Provider_Abstract
         $it = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($path), RecursiveIteratorIterator::LEAVES_ONLY);
         foreach ($it as $i) {
             if (substr($i->getPathname(), -3) != '.js') continue;
-            $depName = 'Ext4.'.str_replace('/', '.', substr($i->getPathname(), strlen($stripPath)+1, -3));
+            $depName = 'Ext4.'.str_replace(array('/', '\\'), '.', substr($i->getPathname(), strlen($stripPath)+1, -3));
             $fileContents = file_get_contents($i->getPathname());
             if (preg_match_all('#^\s*(//|\*) @(class|alternateClassName|define) ([a-zA-Z0-9\./]+)\s*$#m', $fileContents, $m)) {
                 foreach ($m[3] as $cls) {
@@ -78,7 +78,6 @@ class Kwf_Ext_Assets_Provider extends Kwf_Assets_Provider_Abstract
             if ($file == VENDOR_PATH.'/bower_components/extjs/src/lang/Error.js') {
                 return new Kwf_Assets_Dependency_File_Js('kwfext/Error.js');
             }
-
             return new Kwf_Ext_Assets_JsDependency('ext'.$file);
         }
     }
