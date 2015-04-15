@@ -89,39 +89,41 @@ Ext4.define('Kwf.Ext4.App.MainController', {
     {
         this.afterAjaxRequest(conn, response, options);
 
-        var r = Ext4.decode(response.responseText, true);
-        if (response.status == 401) {
-            var msg = trlKwf('Session expired, please re-login.');
-            if (r && r.role && r.role != 'guest') {
-                msg = trlKwf("You don't have enough permissions for this Action");
-            }
-            Ext4.Msg.alert(trlKwf('Login'), msg, function() {
-                location.reload();
-            })
-        } else if (response.status == 428) {
-            var dlg = new Ext4.window.Window({
-                autoCreate : true,
-                title: trlKwf('Error - wrong version'),
-                resizable: false,
-                modal: true,
-                buttonAlign: 'center',
-                bodyPadding: 20,
-                plain: true,
-                closable: false,
-                html: trlKwf('Because of an application update the application has to be reloaded.'),
-                buttons: [{
-                    text: trlKwf('OK'),
-                    handler: function() {
-                        location.reload();
-                    },
-                    scope: this
-                }]
-            });
-            dlg.show();
-        } else {
-            Ext4.Msg.alert(trlKwf('Error'), trlKwf('A Server failure occured.'));
-            if (response.status != 500) {
-                throw new Error('Request failed: '+response.status + ' '+response.statusText);
+        if (!options.operation.ignoreErrors) {
+            var r = Ext4.decode(response.responseText, true);
+            if (response.status == 401) {
+                var msg = trlKwf('Session expired, please re-login.');
+                if (r && r.role && r.role != 'guest') {
+                    msg = trlKwf("You don't have enough permissions for this Action");
+                }
+                Ext4.Msg.alert(trlKwf('Login'), msg, function() {
+                    location.reload();
+                })
+            } else if (response.status == 428) {
+                var dlg = new Ext4.window.Window({
+                    autoCreate : true,
+                    title: trlKwf('Error - wrong version'),
+                    resizable: false,
+                    modal: true,
+                    buttonAlign: 'center',
+                    bodyPadding: 20,
+                    plain: true,
+                    closable: false,
+                    html: trlKwf('Because of an application update the application has to be reloaded.'),
+                    buttons: [{
+                        text: trlKwf('OK'),
+                        handler: function() {
+                            location.reload();
+                        },
+                        scope: this
+                    }]
+                });
+                dlg.show();
+            } else {
+                Ext4.Msg.alert(trlKwf('Error'), trlKwf('A Server failure occured.'));
+                if (response.status != 500) {
+                    throw new Error('Request failed: '+response.status + ' '+response.statusText);
+                }
             }
         }
     },
