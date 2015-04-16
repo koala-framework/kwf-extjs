@@ -34,10 +34,6 @@ class Kwf_Ext_Assets_OverridesProvider extends Kwf_Assets_Provider_Abstract
                 }
             }
         }
-        //if ($dependency->getFilenameWithType() == 'ext/packages/sencha-core/src/Ext.js') {
-        if ($dependency->getFilenameWithType() == 'ext/overrides/dom/Element.js') {
-            $deps[Kwf_Assets_Dependency_Abstract::DEPENDENCY_TYPE_USES][] = $this->_providerList->findDependency('Ext.overrides.Ext-more');
-        }
 
         return $deps;
     }
@@ -46,11 +42,18 @@ class Kwf_Ext_Assets_OverridesProvider extends Kwf_Assets_Provider_Abstract
     {
         static $ret;
         if (isset($ret)) return $ret;
+        $ret = self::_getOverridesFromPath(VENDOR_PATH.'/bower_components/extjs/packages/sencha-core/overrides');
+        $ret = array_merge($ret, self::_getOverridesFromPath(VENDOR_PATH.'/bower_components/extjs/overrides'));
+        return $ret;
+    }
+
+    private static function _getOverridesFromPath($path)
+    {
         $ret = array();
-        $it = new RecursiveIteratorIterator(new RecursiveDirectoryIterator(VENDOR_PATH.'/bower_components/extjs/overrides'), RecursiveIteratorIterator::LEAVES_ONLY);
+        $it = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($path), RecursiveIteratorIterator::LEAVES_ONLY);
         foreach ($it as $i) {
             if (substr($i->getPathname(), -3) != '.js') continue;
-            $depName = 'Ext.overrides'.str_replace('/', '.', substr($i->getPathname(), strlen(VENDOR_PATH.'/bower_components/extjs/overrides'), -3));
+            $depName = 'Ext.overrides'.str_replace('/', '.', substr($i->getPathname(), strlen($path), -3));
             $fileContents = file_get_contents($i->getPathname());
 
             // remove comments to avoid dependencies from docs/examples
@@ -60,6 +63,11 @@ class Kwf_Ext_Assets_OverridesProvider extends Kwf_Assets_Provider_Abstract
                 if (preg_match('#^\s*(override)\s*:\s*\'([a-zA-Z0-9\.]+)\'\s*,?\s*$#m', $fileContents, $m)) {
                     if (!isset($ret[$m[2]])) $ret[$m[2]] = array();
                     $ret[$m[2]][] = $depName;
+                }
+            }
+            if (preg_match_all('#^\s*'.'// @(override)\s+([a-zA-Z0-9\./\-_]+\*?)\s*$#m', $fileContents, $m)) {
+                foreach ($m[2] as $f) {
+                    $ret[$f][] = $depName;
                 }
             }
         }

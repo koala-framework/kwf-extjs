@@ -295,11 +295,16 @@ class Kwf_Ext_Assets_Provider extends Kwf_Assets_Provider_Abstract
         $additionalDeps = array();
         if ($dependency->getFileNameWithType() == 'ext/src/Component.js') {
             $additionalDeps[] = 'Ext.plugin.Manager';
-        } else if ($dependency->getFileNameWithType() == 'ext/src/app/Application.js') {
+        } else if ($dependency->getFileNameWithType() == 'ext/packages/sencha-core/src/app/Application.js') {
             $additionalDeps[] = 'Ext.app.ViewModel';
             $additionalDeps[] = 'Ext.class.Loader';
+            //override with same name also in ext/overrides, so add that manually
+            $deps[Kwf_Assets_Dependency_Abstract::DEPENDENCY_TYPE_USES][] = new Kwf_Ext_Assets_JsDependency('ext/packages/sencha-core/overrides/app/Application.js');
         } else if ($dependency->getFileNameWithType() == 'ext/src/ZIndexManager.js') {
             $additionalDeps[] = 'Ext.GlobalEvents';
+        } else if ($dependency->getFileNameWithType() == 'ext/packages/sencha-core/src/Ext.js') {
+            array_unshift($deps[Kwf_Assets_Dependency_Abstract::DEPENDENCY_TYPE_REQUIRES], new Kwf_Ext_Assets_Dependency_Manifest());
+            $additionalDeps[] = 'Ext.Boot';
         }
         foreach ($additionalDeps as $i) {
             $d = $this->_providerList->findDependency($i);

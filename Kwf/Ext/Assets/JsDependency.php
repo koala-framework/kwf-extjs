@@ -16,8 +16,6 @@ class Kwf_Ext_Assets_JsDependency extends Kwf_Assets_Dependency_File_Js
             $ret .= "Ext.Loader.setConfig({\n";
             $ret .= "    enabled: false\n";
             $ret .= "});\n";
-
-            $ret = "Ext.manifest = null;\n".$ret;
         }
         return $ret;
     }

@@ -33,10 +33,11 @@ Ext.define('Kwf.Ext.App.MainController', {
         if (Ext.supports.LocalStorage) {
             Ext.state.Manager.setProvider(new Ext.state.LocalStorageProvider());
         }
-        Ext.Ajax.disableCaching = false;
-        if (!Ext.Ajax.extraParams) Ext.Ajax.extraParams = {};
-        if (Kwf.sessionToken) Ext.Ajax.extraParams.kwfSessionToken = Kwf.sessionToken;
-        Ext.Ajax.extraParams.applicationAssetsVersion = Kwf.application.assetsVersion;
+        Ext.Ajax.setDisableCaching(false);
+        var extraParams = Ext.Ajax.getExtraParams() || {};
+        if (Kwf.sessionToken) extraParams.kwfSessionToken = Kwf.sessionToken;
+        extraParams.applicationAssetsVersion = Kwf.application.assetsVersion;
+        Ext.Ajax.setExtraParams(extraParams);
         Ext.Ajax.on('beforerequest', this.beforeAjaxRequest, this);
         Ext.Ajax.on('requestcomplete', this.onAjaxRequestComplete, this);
         Ext.Ajax.on('requestexception', this.onAjaxRequestException, this);
