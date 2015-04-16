@@ -89,7 +89,10 @@ Ext4.define('Kwf.Ext4.App.MainController', {
     {
         this.afterAjaxRequest(conn, response, options);
 
-        if (!options.operation.ignoreErrors) {
+        var ignoreErrors = false;
+        if (options.operation && options.operation.ignoreErrors) ignoreErrors = options.operation.ignoreErrors;
+
+        if (!ignoreErrors) {
             var r = Ext4.decode(response.responseText, true);
             if (response.status == 401) {
                 var msg = trlKwf('Session expired, please re-login.');
