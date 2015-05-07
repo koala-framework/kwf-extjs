@@ -176,7 +176,7 @@ Ext4.define('Kwf.Ext4.form.field.File', {
                 progress.hide();
             }
         }, this);
-        xhr.open('POST', Kwf.Ext4.model.Uploads.proxy.url, true);
+        xhr.open('POST', Kwf.Ext4.model.Uploads.prototype.proxy.url, true);
         var formData = new mOxie.FormData();
         formData.append('file', file);
         xhr.send(formData);
