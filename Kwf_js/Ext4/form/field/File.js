@@ -18,6 +18,7 @@ Ext4.define('Kwf.Ext4.form.field.File', {
     previewHeight: 40,
     showDeleteButton: true,
     cls: 'kwf-ext4-field-file',
+    allowBlank : true,
     fileIcons: {
         'application/pdf': 'page_white_acrobat',
         'application/x-zip': 'page_white_compressed',
@@ -269,8 +270,8 @@ Ext4.define('Kwf.Ext4.form.field.File', {
 
     validateValue : function(value)
     {
-        if (!value){ // if it's blank
-             if (this.allowBlank){
+        if (!value) { // if it's blank
+             if (this.allowBlank) {
                  this.clearInvalid();
                  return true;
              } else {
