@@ -9,6 +9,7 @@ Ext4.define('Kwf.Ext4.App.MainController', {
     mainPanel: null,
     viewport: null,
     _runningRequests: 0,
+    isLeavingPage: false,
     onLaunch: function()
     {
         if (!this.mainPanel || !(this.mainPanel instanceof Ext4.panel.Panel)) {
@@ -88,6 +89,8 @@ Ext4.define('Kwf.Ext4.App.MainController', {
 
     onAjaxRequestException: function(conn, response, options)
     {
+        if (this.isLeavingPage) return; //when user leaves page all requests are stopped. Don't show errors in that case.
+
         this.afterAjaxRequest(conn, response, options);
 
         var ignoreErrors = false;
@@ -134,6 +137,8 @@ Ext4.define('Kwf.Ext4.App.MainController', {
 
     beforeUnload: function()
     {
+        this.isLeavingPage = true;
+
         var isDirty = false;
         Ext4.each(Ext4.ComponentQuery.query('*'), function(i) {
             if (i.getController && i.getController().isBindableController) {
