@@ -135,7 +135,7 @@ Ext4.define('Kwf.Ext4.App.MainController', {
     beforeUnload: function()
     {
         var isDirty = false;
-        Ext4.each(this.mainPanel.query('*'), function(i) {
+        Ext4.each(Ext4.ComponentQuery.query('*'), function(i) {
             if (i.getController && i.getController().isBindableController) {
                 if (i.getController().isDirty()) {
                     isDirty = true;
