@@ -1,6 +1,6 @@
 // @require Moxie
-mOxie.Env.swf_url = 'bower_components/moxie/bin/flash/Moxie.min.swf';
-mOxie.Env.xap_url = 'bower_components/moxie/bin/silverlight/Moxie.min.xap';
+mOxie.Env.swf_url = '/assets/moxie/bin/flash/Moxie.min.swf';
+mOxie.Env.xap_url = '/assets/moxie/bin/silverlight/Moxie.min.xap';
 
 Ext4.define('Kwf.Ext4.form.field.File', {
     extend: 'Ext4.form.field.Base',
