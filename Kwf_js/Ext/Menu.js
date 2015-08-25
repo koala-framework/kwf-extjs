@@ -1,6 +1,7 @@
 Ext.define('Kwf.Ext.Menu', {
     extend: 'Ext.toolbar.Toolbar',
     requires: [
+        'Ext.button.Button',
         'Ext.toolbar.Fill',
         'Ext.toolbar.Spacer'
     ],

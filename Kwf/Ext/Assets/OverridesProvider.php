@@ -42,8 +42,8 @@ class Kwf_Ext_Assets_OverridesProvider extends Kwf_Assets_Provider_Abstract
     {
         static $ret;
         if (isset($ret)) return $ret;
-        $ret = self::_getOverridesFromPath(VENDOR_PATH.'/bower_components/extjs/packages/sencha-core/overrides');
-        $ret = array_merge($ret, self::_getOverridesFromPath(VENDOR_PATH.'/bower_components/extjs/overrides'));
+        $ret = self::_getOverridesFromPath(VENDOR_PATH.'/bower_components/extjs/packages/core/overrides');
+        $ret = array_merge($ret, self::_getOverridesFromPath(VENDOR_PATH.'/bower_components/extjs/classic/classic/overrides'));
         return $ret;
     }
 

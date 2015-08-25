@@ -7,10 +7,10 @@ class Kwf_Ext_Assets_Provider extends Kwf_Assets_Provider_Abstract
         if (isset($classes)) return $classes;
         $p = VENDOR_PATH.'/bower_components/extjs';
         $classes = array_merge(
-            self::_getAliasClassesForPath($p.'/src', $p.'/src'),
-            self::_getAliasClassesForPath($p.'/overrides', $p),
-            self::_getAliasClassesForPath($p.'/examples/ux', $p.'/examples'),
-            self::_getAliasClassesForPath($p.'/packages/sencha-core/src', $p.'/packages/sencha-core/src')
+            self::_getAliasClassesForPath($p.'/classic/classic/src', $p.'/classic/classic/src'),
+            self::_getAliasClassesForPath($p.'/classic/classic/overrides/dom', $p.'/classic/classic'),
+//            self::_getAliasClassesForPath($p.'/packages/ux/classic/src', $p.'/packages/ux'),
+            self::_getAliasClassesForPath($p.'/packages/core/src', $p.'/packages/core/src')
         );
         return $classes;
     }
@@ -69,22 +69,22 @@ class Kwf_Ext_Assets_Provider extends Kwf_Assets_Provider_Abstract
                 );
             } else if (substr($class, 0, 11)=='.overrides.') {
                 $files = array(
-                    ''.str_replace('.', '/', $class).'.js'
+                    '/classic/classic'.str_replace('.', '/', $class).'.js'
                 );
             } else {
                 if ($class == '.Boot') {
                     $files = array(
-                        '/packages/sencha-core/.sencha/package/Boot.js',
+                        '/packages/core/.sencha/package/Boot.js',
                     );
                 } else {
                     $files = array(
-                        '/src'.str_replace('.', '/', $class).'.js',
-                        '/packages/sencha-core/src'.str_replace('.', '/', $class).'.js',
+                        '/classic/classic/src'.str_replace('.', '/', $class).'.js',
+                        '/packages/core/src'.str_replace('.', '/', $class).'.js',
                     );
                 }
             }
             foreach ($files as $file) {
-                if ($file == VENDOR_PATH.'/bower_components/extjs/src/lang/Error.js') {
+                if ($file == VENDOR_PATH.'/bower_components/extjs/packages/core/src/lang/Error.js') {
                     return new Kwf_Assets_Dependency_File_Js('kwfext/Error.js');
                 }
                 if (file_exists(VENDOR_PATH.'/bower_components/extjs'.$file)) {
@@ -110,8 +110,8 @@ class Kwf_Ext_Assets_Provider extends Kwf_Assets_Provider_Abstract
         $f = substr($f, 3); //strip off Ext
 
         $paths = array(
-            '/src'.str_replace('.', '/', $f),
-            '/packages/sencha-core/src'.str_replace('.', '/', $f),
+            '/classic/classic/src'.str_replace('.', '/', $f),
+            '/packages/core/src'.str_replace('.', '/', $f),
         );
         $libPath = VENDOR_PATH.'/bower_components/extjs';
         $path = false;
@@ -184,7 +184,7 @@ class Kwf_Ext_Assets_Provider extends Kwf_Assets_Provider_Abstract
                     continue;
                 }
 
-                if ($dependency->getFileNameWithType() == 'ext/src/util/Offset.js') {
+                if ($dependency->getFileNameWithType() == 'ext/classic/classic/src/util/Offset.js') {
                     if ($f == 'Ext.dom.CompositeElement') {
                         $f = null;
                     }
@@ -215,9 +215,9 @@ class Kwf_Ext_Assets_Provider extends Kwf_Assets_Provider_Abstract
         }
 
         if (preg_match('#Ext\.define\(\s*[\'"]#', $fileContents, $m)) {
-            if (preg_match_all('#^\s*(extend|override|requires|mixins|uses)\s*:\s*\'([a-zA-Z0-9\.]+\*?)\'\s*,?\s*$#m', $fileContents, $m)) {
+            if (preg_match_all('#^\s*(extend|overrides|requires|mixins|uses)\s*:\s*\'([a-zA-Z0-9\.]+\*?)\'\s*,?\s*$#m', $fileContents, $m)) {
                 foreach ($m[2] as $k=>$cls) {
-                    if ($dependency->getFileNameWithType() == 'ext/packages/sencha-core/src/data/reader/Reader.js'
+                    if ($dependency->getFileNameWithType() == 'ext/packages/core/src/data/reader/Reader.js'
                         && $cls == 'Ext.data.Model'
                     ) {
                         continue;
@@ -285,24 +285,24 @@ class Kwf_Ext_Assets_Provider extends Kwf_Assets_Provider_Abstract
             }
         }
 
-        if ($dependency->getFileNameWithType() == 'ext/src/panel/Panel.js') {
-            $deps[Kwf_Assets_Dependency_Abstract::DEPENDENCY_TYPE_REQUIRES][] = new Kwf_Ext_Assets_CssDependency('ext/packages/ext-theme-neptune/build/resources/ext-theme-neptune-all_01.css');
-            $deps[Kwf_Assets_Dependency_Abstract::DEPENDENCY_TYPE_REQUIRES][] = new Kwf_Ext_Assets_CssDependency('ext/packages/ext-theme-neptune/build/resources/ext-theme-neptune-all_02.css');
-            $deps[Kwf_Assets_Dependency_Abstract::DEPENDENCY_TYPE_REQUIRES][] = new Kwf_Ext_Assets_JsDependency('ext/packages/ext-theme-neptune/build/ext-theme-neptune-debug.js');
+        if ($dependency->getFileNameWithType() == 'ext/classic/classic/src/panel/Panel.js') {
+            $deps[Kwf_Assets_Dependency_Abstract::DEPENDENCY_TYPE_REQUIRES][] = new Kwf_Ext_Assets_CssDependency('ext/build/classic/theme-triton/resources/theme-triton-all_1.css');
+            $deps[Kwf_Assets_Dependency_Abstract::DEPENDENCY_TYPE_REQUIRES][] = new Kwf_Ext_Assets_CssDependency('ext/build/classic/theme-triton/resources/theme-triton-all_2.css');
+            $deps[Kwf_Assets_Dependency_Abstract::DEPENDENCY_TYPE_REQUIRES][] = new Kwf_Ext_Assets_JsDependency('ext/build/classic/theme-triton/theme-triton-debug.js');
         }
 
 
         $additionalDeps = array();
-        if ($dependency->getFileNameWithType() == 'ext/src/Component.js') {
+        if ($dependency->getFileNameWithType() == 'ext/classic/classic/src/Component.js') {
             $additionalDeps[] = 'Ext.plugin.Manager';
-        } else if ($dependency->getFileNameWithType() == 'ext/packages/sencha-core/src/app/Application.js') {
+        } else if ($dependency->getFileNameWithType() == 'ext/packages/core/src/app/Application.js') {
             $additionalDeps[] = 'Ext.app.ViewModel';
             $additionalDeps[] = 'Ext.class.Loader';
             //override with same name also in ext/overrides, so add that manually
-            $deps[Kwf_Assets_Dependency_Abstract::DEPENDENCY_TYPE_USES][] = new Kwf_Ext_Assets_JsDependency('ext/packages/sencha-core/overrides/app/Application.js');
-        } else if ($dependency->getFileNameWithType() == 'ext/src/ZIndexManager.js') {
+            $deps[Kwf_Assets_Dependency_Abstract::DEPENDENCY_TYPE_USES][] = new Kwf_Ext_Assets_JsDependency('ext/packages/core/overrides/app/Application.js');
+        } else if ($dependency->getFileNameWithType() == 'ext/classic/classic/src/ZIndexManager.js') {
             $additionalDeps[] = 'Ext.GlobalEvents';
-        } else if ($dependency->getFileNameWithType() == 'ext/packages/sencha-core/src/Ext.js') {
+        } else if ($dependency->getFileNameWithType() == 'ext/packages/core/src/Ext.js') {
             array_unshift($deps[Kwf_Assets_Dependency_Abstract::DEPENDENCY_TYPE_REQUIRES], new Kwf_Ext_Assets_Dependency_Manifest());
             $additionalDeps[] = 'Ext.Boot';
         }

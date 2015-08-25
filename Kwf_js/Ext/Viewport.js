@@ -8,7 +8,7 @@ Ext.define('Kwf.Ext.Viewport', {
         if (!this.menu) {
             this.menu = Ext.create('Kwf.Ext.Menu', {
                 region: 'north',
-                height: 35,
+                height: 44,
                 border: false
             });
         }
