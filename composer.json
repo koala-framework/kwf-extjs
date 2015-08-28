@@ -21,7 +21,7 @@
             "qunit-phantomjs-runner": "vivid-planet/qunit-phantomjs-runner#e96347ee33b773160cf061d7b1b5c4ad3d1d9082"
         },
         "kwf-lingohub": {
-            "account": "koala-framework",
+            "account": "vivid-planet",
             "project": "kwf-extjs"
         }
     },
