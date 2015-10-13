@@ -9,7 +9,7 @@ class Kwf_Ext_Assets_Provider extends Kwf_Assets_Provider_Abstract
         $classes = array_merge(
             self::_getAliasClassesForPath($p.'/classic/classic/src', $p.'/classic/classic/src'),
             self::_getAliasClassesForPath($p.'/classic/classic/overrides/dom', $p.'/classic/classic'),
-//            self::_getAliasClassesForPath($p.'/packages/ux/classic/src', $p.'/packages/ux'),
+            self::_getAliasClassesForPath($p.'/packages/ux/classic/src', $p.'/packages'),
             self::_getAliasClassesForPath($p.'/packages/core/src', $p.'/packages/core/src')
         );
         return $classes;
@@ -21,6 +21,7 @@ class Kwf_Ext_Assets_Provider extends Kwf_Assets_Provider_Abstract
         foreach ($it as $i) {
             if (substr($i->getPathname(), -3) != '.js') continue;
             $depName = 'Ext.'.str_replace('/', '.', substr($i->getPathname(), strlen($stripPath)+1, -3));
+            if (substr($depName, 0, 6) == 'Ext.ux') $depName = str_replace('classic.src.', '', $depName);
             $fileContents = file_get_contents($i->getPathname());
             if (preg_match_all('#^\s*(//|\*) @(class|alternateClassName|define) ([a-zA-Z0-9\./]+)\s*$#m', $fileContents, $m)) {
                 foreach ($m[3] as $cls) {
@@ -65,7 +66,7 @@ class Kwf_Ext_Assets_Provider extends Kwf_Assets_Provider_Abstract
             }
             if (substr($class, 0, 4)=='.ux.') {
                 $files = array(
-                    '/examples'.str_replace('.', '/', $class).'.js'
+                    '/packages/ux/classic/src'.str_replace('/ux', '', str_replace('.', '/', $class)).'.js',
                 );
             } else if (substr($class, 0, 11)=='.overrides.') {
                 $files = array(
