@@ -42,7 +42,7 @@
 
     <script type="text/javascript">
     <?php if ($this->user) { ?>
-    Kwf.user = '<?= $this->user ?>';
+    Kwf.userId = '<?= $this->user->id ?>';
     <?php } ?>
     Kwf.userRole = '<?= $this->userRole ?>';
     <?php if (isset($this->sessionToken)) { ?>

@@ -34,7 +34,7 @@ class Kwf_Ext_View extends Kwf_View
         $this->userRole = Zend_Registry::get('userModel')->getAuthedUserRole();
         $user = Zend_Registry::get('userModel')->getAuthedUser();
         if ($user) {
-            $this->user = "$user->email, id $user->id, $user->role";
+            $this->user = $user;
         }
 
         return parent::render($name);
