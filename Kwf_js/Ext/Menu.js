@@ -263,5 +263,6 @@ Ext.define('Kwf.Ext.Menu', {
             });
         }
         */
+        this.fireEvent('menuLoaded');
     }
 });
