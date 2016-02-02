@@ -1,4 +1,4 @@
-Ext.define('Kwf.Ext.Assets.TestModel', {
+Ext.define('KwfExt.Assets.TestModel', {
     extend: 'Ext.data.Model',
     proxy: {
         type: 'rest'

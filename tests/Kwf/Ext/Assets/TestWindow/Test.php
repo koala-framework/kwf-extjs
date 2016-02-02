@@ -4,7 +4,7 @@ class Kwf_Ext_Assets_TestWindow_Test extends PHPUnit_Framework_TestCase
     public function testIt()
     {
         $mimeTypes = array('text/javascript', 'text/css');
-        $p = new Kwf_Assets_Package(new Kwf_Ext_Assets_TestProviderList(), 'Kwf.Ext.Assets.TestWindow.Test');
+        $p = new Kwf_Assets_Package(new Kwf_Ext_Assets_TestProviderList(), 'KwfExt.Assets.TestWindow.Test');
         foreach ($mimeTypes as $mimeType) {
             foreach ($p->getFilteredUniqueDependencies($mimeType) as $dep) {
                 $dep->warmupCaches();

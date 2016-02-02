@@ -1,3 +1,3 @@
 // @require TestCls.js
-Ext.define('Kwf.Ext.Assets.TestClsAtRequire', {
+Ext.define('KwfExt.Assets.TestClsAtRequire', {
 });

@@ -1,3 +1,3 @@
-Ext.define('Kwf.Ext.Assets.TestClsExtend', {
-    extend: 'Kwf.Ext.Assets.TestCls'
+Ext.define('KwfExt.Assets.TestClsExtend', {
+    extend: 'KwfExt.Assets.TestCls'
 });

@@ -1,3 +1,3 @@
 Ext.require([
-    'Kwf.Ext.Assets.TestCls'
+    'KwfExt.Assets.TestCls'
 ]);
