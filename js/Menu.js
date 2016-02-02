@@ -1,4 +1,4 @@
-Ext.define('Kwf.Ext.Menu', {
+Ext.define('KwfExt.Menu', {
     extend: 'Ext.toolbar.Toolbar',
     requires: [
         'Ext.button.Button',

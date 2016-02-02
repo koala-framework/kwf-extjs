@@ -1,4 +1,4 @@
-Ext.define('Kwf.Ext.Store.CountriesModel', {
+Ext.define('KwfExt.data.CountriesModel', {
     extend: 'Ext.data.Model',
     requires: ['Ext.data.UuidGenerator'],
     idProperty: 'id',

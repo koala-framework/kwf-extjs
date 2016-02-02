@@ -1,11 +1,11 @@
-Ext.define('Kwf.Ext.App.MainController', {
+Ext.define('KwfExt.app.MainController', {
     extend: 'Ext.app.Application',
     /*$namespace: 'App',*/
     name: 'App',
     requires: [
         'Ext.state.LocalStorageProvider',
         'Ext.state.Manager',
-        'Kwf.Ext.Viewport'
+        'KwfExt.Viewport'
     ],
     mainPanel: null,
     viewport: null,
@@ -22,7 +22,7 @@ Ext.define('Kwf.Ext.App.MainController', {
         Ext.get('loading').fadeOut({remove: true});
 
         if (!this.viewport) {
-            this.viewport = Ext.create('Kwf.Ext.Viewport', {
+            this.viewport = Ext.create('KwfExt.Viewport', {
                 items: [this.mainPanel]
             });
         }
