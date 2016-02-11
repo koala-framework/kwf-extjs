@@ -3,6 +3,7 @@ Ext.define('KwfExt.form.ViewController', {
     alias: 'controller.KwfExt.form',
     saveValidateErrorTitle: trlKwf('Save'),
     saveValidateErrorMsg: trlKwf("Can't save, please fill all red underlined fields correctly."),
+    savingMaskText: trlKwf('Saving...'),
     validatingMaskText: trlKwf('Validating...'),
 
     init: function(view) {
@@ -27,6 +28,7 @@ Ext.define('KwfExt.form.ViewController', {
     },
 
     onSave: function() {
+        this.getView().el.mask(this.savingMaskText);
         this.allowSave().then({
             success: function() {
                 var batch = this.getSession().getParent().getSaveBatch();
@@ -34,9 +36,13 @@ Ext.define('KwfExt.form.ViewController', {
                     batch.on('complete', function(batch, operation) {
                         this.fireViewEvent('savesuccess');
                         this.fireEvent('savesuccess');
+                        this.getView().el.unmask();
                     }, this);
                     batch.start();
                 }
+            },
+            failure: function () {
+                this.getView().el.unmask();
             },
             scope: this
         });
