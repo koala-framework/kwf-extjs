@@ -20,7 +20,16 @@ Ext.define('KwfExt.form.ViewController', {
         }, this);
         Ext.each(this.getView().query('combobox'), function(i) {
             if (i.forceSelection && i.editable && row.get(i.name)) {
-                i.fireEvent('select', i, i.store.getById(row.get(i.name)));
+                if (!i.store.lastOptions) {
+                    i.store.load({
+                        callback: function() {
+                            i.fireEvent('select', i, i.store.getById(row.get(i.name)), row.get(i.name));
+                        },
+                        scope: this
+                    });
+                } else {
+                    i.fireEvent('select', i, i.store.getById(row.get(i.name)), row.get(i.name));
+                }
             }
         }, this);
 
