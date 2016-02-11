@@ -11,6 +11,14 @@ Ext.define('KwfExt.app.MainController', {
     viewport: null,
     _runningRequests: 0,
 
+    init: function()
+    {
+        if (Ext.util.LocalStorage.supported) {
+            Ext.state.Manager.setProvider(Ext.state.LocalStorageProvider.create());
+        }
+        this.callParent(arguments);
+    },
+
     launch: function()
     {
         this.callParent(arguments);
@@ -30,9 +38,6 @@ Ext.define('KwfExt.app.MainController', {
 
     onBeforeLaunch: function()
     {
-        if (Ext.supports.LocalStorage) {
-            Ext.state.Manager.setProvider(new Ext.state.LocalStorageProvider());
-        }
         Ext.Ajax.setDisableCaching(false);
         var extraParams = Ext.Ajax.getExtraParams() || {};
         if (Kwf.sessionToken) extraParams.kwfSessionToken = Kwf.sessionToken;
