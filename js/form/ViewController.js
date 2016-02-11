@@ -48,9 +48,9 @@ Ext.define('KwfExt.form.ViewController', {
                 }
                 if (batch) {
                     batch.on('complete', function(batch, operation) {
+                        this.getView().el.unmask();
                         this.fireViewEvent('savesuccess');
                         this.fireEvent('savesuccess');
-                        this.getView().el.unmask();
                     }, this);
                     batch.start();
                 }
