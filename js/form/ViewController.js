@@ -40,7 +40,12 @@ Ext.define('KwfExt.form.ViewController', {
         this.getView().el.mask(this.savingMaskText);
         this.allowSave().then({
             success: function() {
-                var batch = this.getSession().getParent().getSaveBatch();
+                var session = this.getSession();
+                var batch = session.getSaveBatch();
+                while (session && !batch) {
+                    session = session.getParent();
+                    batch = session.getSaveBatch();
+                }
                 if (batch) {
                     batch.on('complete', function(batch, operation) {
                         this.fireViewEvent('savesuccess');
