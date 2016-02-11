@@ -9,12 +9,15 @@ Ext.define('KwfExt.app.MainController', {
     ],
     mainPanel: null,
     viewport: null,
+    statePrefix: 'ext-',
     _runningRequests: 0,
 
     init: function()
     {
         if (Ext.util.LocalStorage.supported) {
-            Ext.state.Manager.setProvider(Ext.state.LocalStorageProvider.create());
+            Ext.state.Manager.setProvider(Ext.state.LocalStorageProvider.create({
+                prefix: this.statePrefix
+            }));
         }
         this.callParent(arguments);
     },
