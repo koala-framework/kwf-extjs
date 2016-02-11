@@ -4,7 +4,7 @@ Ext.define('KwfExt.form.Panel', {
     requires: [
         'KwfExt.form.ViewController'
     ],
-    controllers: 'KwfExt.form',
+    controller: 'KwfExt.form',
     modelValidation: true,
     autoScroll: true
 });
