@@ -87,7 +87,12 @@ Ext.define('KwfExt.grid.ViewController', {
                         record.drop(this.dropCascade);
                     }, this);
 
-                    var batch = this.getSession().getSaveBatch();
+                    var session = this.getSession();
+                    var batch = session.getSaveBatch();
+                    while (session && !batch) {
+                        session = session.getParent();
+                        batch = session.getSaveBatch();
+                    }
                     if (batch) {
                         batch.start();
                     }
