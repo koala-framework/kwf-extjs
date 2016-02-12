@@ -55,7 +55,7 @@ Ext.define('KwfExt.grid.ViewController', {
             field.on(eventName, function() {
                 var filterId = 'filter-'+field.getName();
                 var v = field.getValue();
-                var filter = this.getView().getStore().filters.get(filterId);
+                var filter = this.getView().getStore().filters ? this.getView().getStore().filters.get(filterId) : false;
                 if (!filter || filter.getValue() != v) {
                     this.getView().getStore().addFilter({
                         id: filterId,
