@@ -44,7 +44,7 @@ Ext.define('KwfExt.form.ViewController', {
                 var batch = session.getSaveBatch();
                 while (session && !batch) {
                     session = session.getParent();
-                    batch = session.getSaveBatch();
+                    if (session) batch = session.getSaveBatch();
                 }
                 if (batch) {
                     batch.on('complete', function(batch, operation) {
@@ -53,6 +53,18 @@ Ext.define('KwfExt.form.ViewController', {
                         this.fireEvent('savesuccess');
                     }, this);
                     batch.start();
+                } else {
+                    var record = this.getView().getRecord();
+                    if (record) {
+                        record.save({
+                            success: function() {
+                                this.getView().el.unmask();
+                                this.fireViewEvent('savesuccess');
+                                this.fireEvent('savesuccess');
+                            },
+                            scope: this
+                        })
+                    }
                 }
             },
             failure: function () {
