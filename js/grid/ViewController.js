@@ -36,6 +36,9 @@ Ext.define('KwfExt.grid.ViewController', {
         var exportCsvButton = view.lookupReference('exportCsvButton');
         if (exportCsvButton) exportCsvButton.on('click', this.onCsvExport, this);
 
+        if (view.getStore()) this.onBindStore();
+        Ext.Function.interceptAfter(view, "bindStore", this.onBindStore, this);
+
         view.query('> toolbar[dock=top] combobox[showClearTrigger=true]').each(function(combobox) {
             combobox.setTriggers(Ext.apply(combobox.getTriggers(), {
                 clearTrigger: {
@@ -67,6 +70,14 @@ Ext.define('KwfExt.grid.ViewController', {
         }, this);
 
         this.callParent(arguments);
+    },
+
+    onBindStore: function()
+    {
+        var s = this.view.getStore();
+        Ext.each(this.view.query('pagingtoolbar'), function(i) {
+            i.bindStore(s);
+        }, this);
     },
 
     onAdd: function() {
