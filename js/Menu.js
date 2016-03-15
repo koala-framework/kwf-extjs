@@ -85,7 +85,7 @@ Ext.define('KwfExt.Menu', {
     {
         var result = Ext.JSON.decode(response.responseText);
 
-        this.items.each(function(i) {
+        Ext.each(this.items, function(i) {
             i.destroy();
         });
         var menuItems = this._processMenus(result.menus);

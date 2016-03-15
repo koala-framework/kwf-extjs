@@ -39,7 +39,7 @@ Ext.define('KwfExt.grid.ViewController', {
         if (view.getStore()) this.onBindStore();
         Ext.Function.interceptAfter(view, "bindStore", this.onBindStore, this);
 
-        view.query('> toolbar[dock=top] combobox[showClearTrigger=true]').each(function(combobox) {
+        Ext.each(view.query('> toolbar[dock=top] combobox[showClearTrigger=true]'), function(combobox) {
             combobox.setTriggers(Ext.apply(combobox.getTriggers(), {
                 clearTrigger: {
                     cls: 'x-form-clear-trigger',
@@ -244,7 +244,7 @@ Ext.define('KwfExt.grid.ViewController', {
                 filters: store.filters.items,
                 sorters: store.sorters.items,
                 callback: function (records) {
-                    records.each(function (row) {
+                    Ext.each(records, function (row) {
                         data.push(config.map.call(this, row));
                     }, this);
                     if (page < pageCount) {
