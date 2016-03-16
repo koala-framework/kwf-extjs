@@ -19,6 +19,16 @@ Ext.define('KwfExt.app.MainController', {
                 prefix: this.statePrefix
             }));
         }
+
+        Ext.Ajax.setDisableCaching(false);
+        var extraParams = Ext.Ajax.getExtraParams() || {};
+        if (Kwf.sessionToken) extraParams.kwfSessionToken = Kwf.sessionToken;
+        extraParams.applicationAssetsVersion = Kwf.application.assetsVersion;
+        Ext.Ajax.setExtraParams(extraParams);
+        Ext.Ajax.on('beforerequest', this.beforeAjaxRequest, this);
+        Ext.Ajax.on('requestcomplete', this.onAjaxRequestComplete, this);
+        Ext.Ajax.on('requestexception', this.onAjaxRequestException, this);
+
         this.callParent(arguments);
     },
 
@@ -37,20 +47,6 @@ Ext.define('KwfExt.app.MainController', {
                 items: [this.mainPanel]
             });
         }
-    },
-
-    onBeforeLaunch: function()
-    {
-        Ext.Ajax.setDisableCaching(false);
-        var extraParams = Ext.Ajax.getExtraParams() || {};
-        if (Kwf.sessionToken) extraParams.kwfSessionToken = Kwf.sessionToken;
-        extraParams.applicationAssetsVersion = Kwf.application.assetsVersion;
-        Ext.Ajax.setExtraParams(extraParams);
-        Ext.Ajax.on('beforerequest', this.beforeAjaxRequest, this);
-        Ext.Ajax.on('requestcomplete', this.onAjaxRequestComplete, this);
-        Ext.Ajax.on('requestexception', this.onAjaxRequestException, this);
-
-        this.callParent(arguments);
     },
 
     beforeAjaxRequest: function(conn, options)
