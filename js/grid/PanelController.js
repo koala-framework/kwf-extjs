@@ -1,9 +1,12 @@
 // @require ModernizrADownload
 // @require excel-builder
 
-Ext.define('KwfExt.grid.ViewController', {
+Ext.define('KwfExt.grid.PanelController', {
     extend: 'Ext.app.ViewController',
-    alias: 'controller.KwfExt.grid',
+    alias: 'controller.KwfExt.grid.Panel',
+    requires: [
+        'Ext.Deferred'
+    ],
     deleteConfirmTitle: trlKwf('Delete'),
     deleteConfirmText: trlKwf('Do you really wish to remove this entry?'),
     dropCascade: true,
@@ -12,6 +15,7 @@ Ext.define('KwfExt.grid.ViewController', {
     excelExportWorksheetName: trlKwf('Worksheet'),
     postBackUrl: '/kwf/media/post-back/json-upload',
     init: function(view) {
+/*
         var addButton = view.lookupReference('addButton');
         if (addButton) addButton.on('click', this.onAdd, this);
 
@@ -35,6 +39,7 @@ Ext.define('KwfExt.grid.ViewController', {
 
         var exportCsvButton = view.lookupReference('exportCsvButton');
         if (exportCsvButton) exportCsvButton.on('click', this.onCsvExport, this);
+*/
 
         if (view.getStore()) this.onBindStore();
         Ext.Function.interceptAfter(view, "bindStore", this.onBindStore, this);
@@ -81,8 +86,21 @@ Ext.define('KwfExt.grid.ViewController', {
     },
 
     onAdd: function() {
-        var newRecord = this.getSession().createRecord(this.getView().getStore().getModel().$className, {});
-        this.getView().setSelection(this.getView().getStore().add(newRecord));
+
+        if (this.getView().getEditWindow()) {
+            var win = this.getView().getEditWindow();
+            if (!win.isComponent) {
+                win = Ext.ComponentManager.create(win);
+                this.getView().setEditWindow(win);
+            }
+            win.setTitle('Add');
+            var newRecord = win.getSession().createRecord(this.getView().getStore().getModel().$className, {});
+            win.getViewModel().set('record', newRecord);
+            win.show();
+        } else {
+            var newRecord = this.getSession().createRecord(this.getView().getStore().getModel().$className, {});
+            this.getView().setSelection(this.getView().getStore().add(newRecord));
+        }
     },
 
     onDelete: function() {
@@ -111,14 +129,14 @@ Ext.define('KwfExt.grid.ViewController', {
             }
         });
     },
-
+/*
     onSave: function() {
         var batch = this.getViewModel().getSession().getSaveBatch();
         if (batch) {
             batch.start();
         }
     },
-
+*/
     onXlsExport: function()
     {
         this._exportData({
@@ -304,6 +322,187 @@ Ext.define('KwfExt.grid.ViewController', {
                 });
             }
         }
+    },
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    saveChangesTitle: 'Save',
+    saveChangesMsg: 'Do you want to save the changes?',
+
+    control: {
+        '#': {
+            beforeselect: 'onBeforeSelect'
+        }
+    },
+
+    onBeforeSelect: function(sm, record)
+    {
+//         console.log('onBeforeSelect', sm.getSelection());
+        var parentSessionView = this.getView().findParentBy(function(i){return i.getSession()});
+        if (parentSessionView) {
+            var selection = this.getView().getSelection();
+            var isDirty = selection.length && selection[0].phantom;
+            Ext.each(parentSessionView.query("[session]"), function(i) {
+                if (i.getSession().getChangesForParent()) {
+//                     console.log('dirty view', i, i.el.dom);
+                    isDirty = true;
+                }
+            }, this);
+            /*
+            Ext.each(parentSessionView.query("[controller]"), function(i) {
+                //additionally a controller can be dirty
+                if (i.getController().isSaveable && i.getController().isDirty()) {
+                    isDirty = true;
+                }
+            }, this);
+            */
+            if (isDirty) {
+                this.askSaveChanges().then({
+                    success: function() {
+//                         console.log('success!');
+                        this.getView().setSelection(record);
+                    },
+                    failure: function() {
+//                         console.log('failure!');
+                    },
+                    scope: this
+                });
+                return false;
+            }
+        }
+
+//             var isDirty = false;
+//             var sessionView = this.getView().findParentBy(function(i){return i.getSession()});
+//             Ext.each(sessionView.query("[session]"), function(i) {
+//                 if (i.getSession().getChanges()) {
+//                     isDirty = true;
+//                 }
+//             }, this);
+//             if (isDirty) {
+//                 this.askSaveChanges().then({
+//                     success: function() {
+//                         this.getView().setSelection(record);
+//                     },
+//                     failure: function() {
+//                         this.getView().setSelection(bindable.getLoadedRecord()); //TODO
+//                     },
+//                     scope: this
+//                 });
+//                 return false;
+//             }
+    },
+
+    askSaveChanges: function()
+    {
+        var deferred = new Ext.Deferred;
+        Ext.Msg.show({
+            title: this.saveChangesTitle,
+            msg: this.saveChangesMsg,
+            buttons: Ext.Msg.YESNOCANCEL,
+            scope: this,
+            fn: function(button) {
+                if (button == 'yes') {
+                    this.doSave().then(function() {
+                            deferred.resolve();
+                        }, function() {
+                            //validation failed re-select
+                            deferred.reject();
+                        });
+                } else if (button == 'no') {
+//                     console.log('no, discard changes');
+                    //discard changes
+                    var sessionView = this.getView().findParentBy(function(i){return i.getSession()});
+                    Ext.each(sessionView.query("[session]"), function(i) {
+                        if (i.getSession().getChanges()) {
+                            var session = i.getSession();
+                            var newSession;
+                            if (session.getParent()) {
+                                newSession = session.getParent().spawn();
+                            } else {
+                                newSession = new Ext.data.Session({
+                                    schema: session.getSchema()
+                                });
+                            }
+//                             console.log('set new session', newSession);
+                            i.setSession(newSession);
+                            i.getViewModel().setSession(newSession); //TODO might not have viewmodel? children might have viewmodel?
+                            session.destroy();
+                        }
+                    }, this);
+                    var selection = this.getView().getSelection();
+                    if (selection.length && selection[0].phantom) {
+                        this.getView().suspendEvents();
+                        this.getView().setSelection([]);
+                        this.getView().resumeEvents();
+//                         console.log('DROOOP');
+                        selection[0].drop();
+                    }
+                    deferred.resolve();
+                } else if (button == 'cancel') {
+                    deferred.reject();
+                }
+            }
+        });
+        return deferred.promise;
+    },
+
+
+    //TODO kopie von SaveButtonController, das gehört vereinheitlicht - wie auch immer
+    doSave: function()
+    {
+        var sessionView = null;
+        //TODO da können mehrere sessions vorhanden sein
+        Ext.each(this.getView().findParentBy(function(i){return i.getSession()}).query("[session]"), function(i) {
+            sessionView = i;
+        });
+
+        var promise;
+        if (sessionView.getController().isSaveable) {
+            promise = sessionView.getController().allowSave();
+        } else {
+            promise = Ext.Promise.resolve();
+        }
+        Ext.each(sessionView.query('[controller]'), function(i) {
+            if (i.getController().isSaveable) {
+                promise = promise.then(function() {
+                    return i.getController().allowSave();
+                });
+            }
+        }, this);
+
+        promise = promise.then((function() {
+//             console.log('save.......');
+            var session = sessionView.getSession();
+            /*
+            if (session.getParent()) {
+                this.getView().lookupSession().save();
+                sessionView.discardSession();
+            }
+            */
+            var batch = session.getSaveBatch();
+//             console.log('batch', batch);
+            if (batch) {
+                batch.start();
+                session.save(); //save to parent
+                session.commit();
+                if (session.getParent()) {
+                    session.getParent().commit();
+                }
+            }
+        }).bind(this));
+
+        return promise;
     }
 });
 

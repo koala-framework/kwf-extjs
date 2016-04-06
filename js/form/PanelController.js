@@ -1,11 +1,16 @@
-Ext.define('KwfExt.form.ViewController', {
+Ext.define('KwfExt.form.PanelController', {
     extend: 'Ext.app.ViewController',
-    alias: 'controller.KwfExt.form',
+    alias: 'controller.KwfExt.form.Panel',
     saveValidateErrorTitle: trlKwf('Save'),
     saveValidateErrorMsg: trlKwf("Can't save, please fill all red underlined fields correctly."),
     savingMaskText: trlKwf('Saving...'),
     validatingMaskText: trlKwf('Validating...'),
 
+    requires: [
+        'KwfExt.controller.Saveable',
+        'Ext.Promise'
+    ],
+/*
     init: function(view) {
         var saveButton = view.lookupReference('saveButton');
         if (saveButton) saveButton.on('click', this.onSave, this);
@@ -109,6 +114,35 @@ Ext.define('KwfExt.form.ViewController', {
             }
             return Ext.Deferred.resolved();
         }
+    },
+*/
+
+
+    saveValidateErrorTitle: 'Save',
+    saveValidateErrorMsg: "Can't save, please fill all marked fields correctly.",
+
+    mixins: {
+        saveable: 'KwfExt.controller.Saveable'
+    },
+
+    isValid: function()
+    {
+        return this.getView().isValid();
+    },
+
+    isDirty: function()
+    {
+        //form syncs to session, so it can be considerd as not dirty
+        return false;
+    },
+
+    allowSave: function()
+    {
+        if (!this.isValid()) {
+            Ext.Msg.alert(this.saveValidateErrorTitle, this.saveValidateErrorMsg);
+            return Ext.Promise.reject();
+        }
+        return this.mixins.saveable.allowSave.call(this);
     }
 });
 

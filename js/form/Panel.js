@@ -1,11 +1,49 @@
 Ext.define('KwfExt.form.Panel', {
     extend: 'Ext.form.Panel',
-    alias: 'widget.KwfExt.form',
+    alias: 'widget.KwfExt.form.panel',
     requires: [
-        'KwfExt.form.ViewController'
+        'KwfExt.form.PanelController',
+        'KwfExt.form.PanelModel'
     ],
-    controller: 'KwfExt.form',
+    controller: 'KwfExt.form.Panel',
     modelValidation: true,
-    autoScroll: true
+    autoScroll: true,
+    viewModel: {
+        type: 'KwfExt.form.Panel'
+    },
+
+    defaultBindProperty: 'record',
+    setRecord: function(record)
+    {
+//         console.log('setRecord', record);
+        if (Ext.isArray(record)) {
+            if (record.length == 0) {
+                record = null;
+            } else {
+                record = record[0];
+            }
+        }
+        if (record) {
+            if (record.session !== this.lookupSession()) {
+                if (!record.isModel) {
+                    throw new Error("record is not a model");
+                }
+//                 console.log('linkTo', record);
+                this.getViewModel().linkTo('record', record);
+            } else {
+//                 console.log('set', record);
+                this.getViewModel().set('record', record);
+            }
+        } else {
+//             console.log('set', record);
+            this.getViewModel().set('record', null);
+        }
+
+        this.getForm().reset();
+    },
+    getRecord: function()
+    {
+        return this.getViewModel().get('record');
+    }
 });
 
