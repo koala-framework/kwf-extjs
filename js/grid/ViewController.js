@@ -80,8 +80,10 @@ Ext.define('KwfExt.grid.ViewController', {
     },
 
     onAdd: function() {
-        var newRecord = this.getSession().createRecord(this.getView().getStore().getModel().$className, {});
-        this.getView().setSelection(this.getView().getStore().add(newRecord));
+        var grid = this.getView();
+        var newRecord = this.getSession().createRecord(grid.getStore().getModel().$className, {});
+        grid.setSelection(grid.getStore().add(newRecord));
+        grid.getView().refresh();
     },
 
     onDelete: function() {
