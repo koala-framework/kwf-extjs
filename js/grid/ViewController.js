@@ -6,7 +6,6 @@ Ext.define('KwfExt.grid.ViewController', {
     alias: 'controller.KwfExt.grid',
     deleteConfirmTitle: trlKwf('Delete'),
     deleteConfirmText: trlKwf('Do you really wish to remove this entry?'),
-    dropCascade: true,
     exportProgressTitle: trlKwf('Export'),
     exportProgressMsg: trlKwf('Exporting rows...'),
     excelExportWorksheetName: trlKwf('Worksheet'),
@@ -95,18 +94,8 @@ Ext.define('KwfExt.grid.ViewController', {
             fn: function(button) {
                 if (button == 'yes') {
                     Ext.each(this.getView().getSelectionModel().getSelection(), function(record) {
-                        record.drop(this.dropCascade);
+                        record.erase();
                     }, this);
-
-                    var session = this.getSession();
-                    var batch = session.getSaveBatch();
-                    while (session && !batch) {
-                        session = session.getParent();
-                        batch = session.getSaveBatch();
-                    }
-                    if (batch) {
-                        batch.start();
-                    }
                 }
             }
         });
