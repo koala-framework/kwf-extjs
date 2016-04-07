@@ -13,7 +13,8 @@
     "extra": {
         "require-bower": {
             "extjs": "~6.0.0-640",
-            "excel-builder": "stephenliberty/excel-builder.js#ef049b7c500caf598a15fe2a9243a83a8c14927b"
+            "excel-builder": "stephenliberty/excel-builder.js#ef049b7c500caf598a15fe2a9243a83a8c14927b",
+            "moxie": "~1.4"
         },
         "require-dev-bower": {
             "qunit": "1.14.0",
