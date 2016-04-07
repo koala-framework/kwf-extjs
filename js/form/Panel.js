@@ -39,7 +39,7 @@ Ext.define('KwfExt.form.Panel', {
             this.getViewModel().set('record', null);
         }
 
-        this.getForm().reset();
+        this.getForm().clearInvalid();
     },
     getRecord: function()
     {
