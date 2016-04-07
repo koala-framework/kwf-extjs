@@ -139,10 +139,12 @@ Ext.define('KwfExt.editWindow.WindowController', {
             scope: this
         });
         */
+        this.closeWindow();
     },
 
     onCancel: function()
     {
+        /*
         if (this.bindable.isDirty()) {
             Ext.Msg.show({
                 title: this.saveChangesTitle,
@@ -172,12 +174,13 @@ Ext.define('KwfExt.editWindow.WindowController', {
             }
             this.closeWindow();
         }
+        */
     },
 
     closeWindow: function()
     {
         this.view.hide();
-        this.bindable.reset();
+        //this.bindable.reset();
     },
 
     getLoadedRecord: function()

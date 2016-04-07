@@ -95,7 +95,7 @@ Ext.define('KwfExt.grid.PanelController', {
             }
             win.setTitle('Add');
             var newRecord = win.getSession().createRecord(this.getView().getStore().getModel().$className, {});
-            win.getViewModel().set('record', newRecord);
+            win.setRecord(newRecord);
             win.show();
         } else {
             var newRecord = this.getSession().createRecord(this.getView().getStore().getModel().$className, {});

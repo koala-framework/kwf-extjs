@@ -30,7 +30,7 @@ Ext.define('KwfExt.editWindow.Window', {
         reference: 'cancelButton',
         handler: 'onCancel'
     }],
-
+    /*
     openEditWindow: function(row, store)
     {
         this._loadedStore = store;
@@ -44,5 +44,16 @@ Ext.define('KwfExt.editWindow.Window', {
         if (this.focusOnEditSelector) {
             this.view.down(this.focusOnEditSelector).focus();
         }
+    }
+    */
+
+    defaultBindProperty: 'record',
+    setRecord: function(record)
+    {
+        this.items.first().setRecord(record);
+    },
+    getRecord: function()
+    {
+        return this.items.first().getRecord();
     }
 });
