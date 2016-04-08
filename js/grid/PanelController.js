@@ -74,6 +74,21 @@ Ext.define('KwfExt.grid.PanelController', {
             }, this, { buffer: 300 });
         }, this);
 
+        var win = this.getView().getEditWindow();
+        if (win && !win.isComponent) {
+            win = Ext.ComponentManager.create(win);
+            this.getView().setEditWindow(win);
+            win.on('save', function() {
+                var rec = win.getRecord();
+                //console.log(rec, rec.phantom);
+                if (rec.phantom) {
+                    this.getView().getStore().add(rec)
+                    this.getView().setSelection(rec);
+                }
+            }, this);
+        }
+
+
         this.callParent(arguments);
     },
 

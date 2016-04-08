@@ -128,9 +128,12 @@ Ext.define('KwfExt.editWindow.WindowController', {
                 batch = session.getSaveBatch();
             }
             batch.start();
+
+            this.fireViewEvent('save'); //TODO is this the best way to do this?
         } else {
 //             console.log('no changes');
         }
+
         /*
         this.doSave().then({
             success: function() {
