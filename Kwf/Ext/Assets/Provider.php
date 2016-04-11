@@ -146,7 +146,6 @@ class Kwf_Ext_Assets_Provider extends Kwf_Assets_Provider_Abstract
             return array();
         }
 
-
         $deps = array(
             Kwf_Assets_Dependency_Abstract::DEPENDENCY_TYPE_REQUIRES => array(),
             Kwf_Assets_Dependency_Abstract::DEPENDENCY_TYPE_USES => array(),
@@ -216,7 +215,7 @@ class Kwf_Ext_Assets_Provider extends Kwf_Assets_Provider_Abstract
         }
 
         if (preg_match('#Ext\.define\(\s*[\'"]#', $fileContents, $m)) {
-            if (preg_match_all('#^\s*(extend|overrides|requires|mixins|uses)\s*:\s*\'([a-zA-Z0-9\.]+\*?)\'\s*,?\s*$#m', $fileContents, $m)) {
+            if (preg_match_all('#^\s*(extend|overrides|requires|mixins|uses)\s*:\s*[\'"]([a-zA-Z0-9\.]+\*?)[\'"]\s*,?\s*$#m', $fileContents, $m)) {
                 foreach ($m[2] as $k=>$cls) {
                     if ($dependency->getFileNameWithType() == 'ext/packages/core/src/data/reader/Reader.js'
                         && $cls == 'Ext.data.Model'
@@ -235,7 +234,7 @@ class Kwf_Ext_Assets_Provider extends Kwf_Assets_Provider_Abstract
             if (preg_match_all('#^\s*(requires|mixins|uses)\s*:\s*(\[.+?\]|{.+?})\s*,?\s*$#ms', $fileContents, $m)) {
                 foreach ($m[2] as $k=>$i) {
                     $type = ($m[1][$k] == 'uses' ? Kwf_Assets_Dependency_Abstract::DEPENDENCY_TYPE_USES : Kwf_Assets_Dependency_Abstract::DEPENDENCY_TYPE_REQUIRES);
-                    if (preg_match_all('#\'([a-zA-Z0-9\._]+\*?)\'#', $i, $m2)) {
+                    if (preg_match_all('#[\'"]([a-zA-Z0-9\._]+\*?)[\'"]#', $i, $m2)) {
                         if ($m[1][$k] == 'requires') {
                             $classes[$type] = array_merge($m2[1], $classes[$type]);
                         } else {
@@ -246,7 +245,7 @@ class Kwf_Ext_Assets_Provider extends Kwf_Assets_Provider_Abstract
             }
 
             //this should probably only be done for relevant classes, ie. layout for panel, proxy for model etc
-            if (preg_match_all('#^\s*(proxy|layout|reader|writer|componentLayout)\s*:\s*\'([a-zA-Z0-9\.]+)\'\s*,?\s*$#m', $fileContents, $m)) {
+            if (preg_match_all('#^\s*(proxy|layout|reader|writer|componentLayout)\s*:\s*[\'"]([a-zA-Z0-9\.]+)[\'"]\s*,?\s*$#m', $fileContents, $m)) {
                 foreach ($m[2] as $k=>$cls) {
                     $type = Kwf_Assets_Dependency_Abstract::DEPENDENCY_TYPE_REQUIRES;
                     $t = $m[1][$k];
@@ -255,7 +254,7 @@ class Kwf_Ext_Assets_Provider extends Kwf_Assets_Provider_Abstract
                     $classes[$type][] = $aliasClasses[$t.'.'.$cls];
                 }
             }
-            if (preg_match_all('#^\s*(proxy|layout|reader|writer|componentLayout)\s*:\s*{\s*type\s*:\s*\'([a-zA-Z0-9\.]+)\'#m', $fileContents, $m)) {
+            if (preg_match_all('#^\s*(proxy|layout|reader|writer|componentLayout)\s*:\s*{\s*type\s*:\s*[\'"]([a-zA-Z0-9\.]+)[\'"]#m', $fileContents, $m)) {
                 foreach ($m[2] as $k=>$cls) {
                     $type = Kwf_Assets_Dependency_Abstract::DEPENDENCY_TYPE_REQUIRES;
                     $t = $m[1][$k];
