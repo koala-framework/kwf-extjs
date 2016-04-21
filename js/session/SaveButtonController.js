@@ -38,34 +38,23 @@ Ext.define('KwfExt.session.SaveButtonController', {
         }, this);
 
         promise = promise.then((function() {
-//             console.log('all valid. save now');
+            console.log('all valid. save now');
             var session = this.getSession();
-            /*
-            if (session.getParent()) {
-                this.getView().lookupSession().save();
-                parentSessionView.discardSession();
-            }
-            */
-
-            if (session.getChanges()) {
+            if (session.getChangesForParent()) {
+                console.log('changes', session.getChangesForParent());
                 var batch;
                 if (session.getParent()) {
+                    console.log('save to parent');
                     session.save();
                     batch = session.getParent().getSaveBatch();
-
-                    //create new session, destroy current one
-                    var newSession = session.getParent().spawn();
-//                     console.log('set new session', newSession);
-                    parentSessionView.setSession(newSession);
-                    parentSessionView.getViewModel().setSession(newSession); //TODO might not have viewmodel? children might have viewmodel?
-                    session.destroy();
-
                 } else {
                     batch = session.getSaveBatch();
                 }
                 batch.start();
+
+                session.commit(); //mark session clean
             } else {
-//                 console.log('no changes');
+                console.log('no changes');
             }
         }).bind(this));
 

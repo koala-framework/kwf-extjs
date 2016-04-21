@@ -485,23 +485,23 @@ Ext.define('KwfExt.grid.PanelController', {
         }, this);
 
         promise = promise.then((function() {
-//             console.log('save.......');
+            console.log('all valid. save now');
             var session = sessionView.getSession();
-            /*
-            if (session.getParent()) {
-                this.getView().lookupSession().save();
-                sessionView.discardSession();
-            }
-            */
-            var batch = session.getSaveBatch();
-//             console.log('batch', batch);
-            if (batch) {
-                batch.start();
-                session.save(); //save to parent
-                session.commit();
+            if (session.getChangesForParent()) {
+                console.log('changes', session.getChangesForParent());
+                var batch;
                 if (session.getParent()) {
-                    session.getParent().commit();
+                    console.log('save to parent');
+                    session.save();
+                    batch = session.getParent().getSaveBatch();
+                } else {
+                    batch = session.getSaveBatch();
                 }
+                batch.start();
+
+                session.commit(); //mark session clean
+            } else {
+                console.log('no changes');
             }
         }).bind(this));
 
