@@ -77,12 +77,14 @@ Ext.define('KwfExt.grid.PanelController', {
         if (win && !win.isComponent) {
             win = Ext.ComponentManager.create(win);
             this.getView().setEditWindow(win);
-            win.on('save', function() {
+            win.on('hide', function() {
                 var rec = win.getRecord();
-                //console.log(rec, rec.phantom);
-                if (rec.phantom) {
-                    this.getView().getStore().add(rec)
-                    this.getView().setSelection(rec);
+                if (!rec.dropped) {
+                    var store = this.getView().getStore();
+                    if (store.indexOf(rec) == -1) {
+                        store.add(rec);
+                        this.getView().setSelection(rec);
+                    }
                 }
             }, this);
         }
@@ -102,10 +104,6 @@ Ext.define('KwfExt.grid.PanelController', {
     onAdd: function() {
         if (this.getView().getEditWindow()) {
             var win = this.getView().getEditWindow();
-            if (!win.isComponent) {
-                win = Ext.ComponentManager.create(win);
-                this.getView().setEditWindow(win);
-            }
             win.setTitle('Add');
             var newRecord = win.getSession().createRecord(this.getView().getStore().getModel().$className, {});
             win.setRecord(newRecord);

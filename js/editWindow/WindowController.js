@@ -3,7 +3,6 @@ Ext.define('KwfExt.editWindow.WindowController', {
     alias: 'controller.KwfExt.editWindow.window',
 
     focusOnEditSelector: 'field',
-    bindable: null,
     autoSync: true,
 
     deleteConfirmText: 'Do you really wish to remove this entry?',
@@ -30,12 +29,12 @@ Ext.define('KwfExt.editWindow.WindowController', {
         if (!this.bindable.isBindableController) {
             Ext.Error.raise('bindable config needs to be a Densa.mvc.bindable.Interface');
         }
-
+*/
         this.view.on('beforeclose', function() {
-            this.onCancelClick();
+            this.onCancel();
             return false;
         }, this);
-
+/*
         this.bindable.view.on('savesuccess', function() {
             this.fireViewEvent('savesuccess');
         }, this);
@@ -58,97 +57,81 @@ Ext.define('KwfExt.editWindow.WindowController', {
         }
     },
 */
+/*
     validateAndSubmit: function(options)
     {
         return this.bindable.validateAndSubmit(options);
     },
-
+*/
+    //TODO kopie von SaveButtonController, das gehört vereinheitlicht - wie auch immer
     doSave: function()
     {
-/*
-        return this.bindable.allowSave().then({
-            success: function() {
+        var deferred = new Ext.Deferred()
 
-                var row = this.bindable.getLoadedRecord();
-                if (row.phantom && this._loadedStore
-                    && this._loadedStore.indexOf(row) == -1
-                ) {
-                    this._loadedStore.add(row);
-                }
+        var promise = Ext.Promise.resolve();
+        Ext.each(this.view.query('[controller]'), function(i) {
+            if (i.getController().isSaveable) {
+                promise = promise.then(function() {
+                    return i.getController().allowSave();
+                });
+            }
+        }, this);
 
-                if (this.autoSync) {
-                    if (this._loadedStore) {
-                        var syncQueue = new Densa.data.StoreSyncQueue();
-                        syncQueue.add(this._loadedStore); //sync store first
-                        this.bindable.save(syncQueue);    //then bindables (so bindable grid is synced second)
-                                                        //bindable forms can still update the row as the sync is not yet started
-                        syncQueue.start({
-                            success: function() {
-                                this.fireViewEvent('savesuccess');
-                            },
-                            scope: this
-                        });
-                    } else {
-                        this.bindable.save();
-                        this.bindable.getLoadedRecord().save({
-                            callback: function(records, operation, success) {
-                                if (success) this.fireViewEvent('savesuccess');
-                            },
-                            scope: this
-                        });
-                    }
+        promise = promise.then((function() {
+            //console.log('all valid. save now');
+            var session = this.getSession();
+            if (session.getChangesForParent()) {
+                //console.log('changes', session.getChangesForParent());
+                var batch;
+                if (session.getParent()) {
+                    //console.log('save to parent');
+                    session.save();
+                    batch = session.getParent().getSaveBatch();
                 } else {
-                    this.bindable.save();
+                    batch = session.getSaveBatch();
                 }
-                this.fireViewEvent('save');
+                batch.on('complete', function() {
+                    this.view.unmask();
+                    if (!batch.hasException()) {
+                        deferred.resolve();
+                    } else {
+                        deferred.reject();
+                    }
+                }, this);
+                this.view.mask('Saving...');
+                batch.start();
 
-            },
-            scope: this
-        });
-*/
+                session.commit(); //mark session clean
+            } else {
+                //console.log('no changes');
+                deferred.resolve();
+            }
+        }).bind(this), (function() {
+            deferred.reject();
+        }).bind(this));
+
+        return deferred.promise;
     },
 
     onSave: function()
     {
-        var session = this.getSession();
-        if (session.getChanges()) {
-            var batch;
-            if (session.getParent()) {
-                session.save();
-                batch = session.getParent().getSaveBatch();
-
-                //create new session, destroy current one
-                var newSession = session.getParent().spawn();
-//                 console.log('set new session', newSession);
-                parentSessionView.setSession(newSession);
-                parentSessionView.getViewModel().setSession(newSession); //TODO might not have viewmodel? children might have viewmodel?
-                session.destroy();
-
-            } else {
-                batch = session.getSaveBatch();
-            }
-            batch.start();
-
-            this.fireViewEvent('save'); //TODO is this the best way to do this?
-        } else {
-//             console.log('no changes');
-        }
-
-        /*
-        this.doSave().then({
-            success: function() {
-                this.closeWindow();
-            },
-            scope: this
-        });
-        */
-        this.closeWindow();
+        this.doSave().then((function() {
+            this.closeWindow();
+        }).bind(this));
     },
 
     onCancel: function()
     {
-        /*
-        if (this.bindable.isDirty()) {
+        var session = this.getSession();
+        var record = this.view.getRecord();
+
+        var isPhantom = record.phantom;
+        record.phantom = false;
+        var hasChanges = session.getChangesForParent() != null;
+        record.phantom = isPhantom;
+
+        if (hasChanges) {
+            //console.log('changes', this.getSession().getChangesForParent());
             Ext.Msg.show({
                 title: this.saveChangesTitle,
                 msg: this.saveChangesMsg,
@@ -156,47 +139,36 @@ Ext.define('KwfExt.editWindow.WindowController', {
                 buttons: Ext.Msg.YESNOCANCEL,
                 fn: function(btn) {
                     if (btn == 'no') {
-                        if (this._loadedStore && this.getLoadedRecord().phantom) {
-                            this._loadedStore.remove(this.getLoadedRecord());
+                        var record = this.view.getRecord();
+                        if (record.phantom) {
+                            record.drop();
                         }
                         this.closeWindow();
                     } else if (btn == 'yes') {
-                        this.doSave().then({
-                            success: function() {
-                                this.closeWindow();
-                            },
-                            scope: this
-                        });
+                        this.doSave().then((function() {
+                            this.closeWindow();
+                        }).bind(this));
                     }
                 },
                 scope: this
             });
         } else {
-            if (this._loadedStore && this.getLoadedRecord().phantom) {
-                this._loadedStore.remove(this.getLoadedRecord());
+            var record = this.view.getRecord();
+            if (record.phantom) {
+                record.drop();
             }
             this.closeWindow();
         }
-        */
     },
 
     closeWindow: function()
     {
         this.view.hide();
-        //this.bindable.reset();
-    },
-
-    getLoadedRecord: function()
-    {
-        if (this.bindable) {
-            return this.bindable.getLoadedRecord();
-        } else {
-            return null;
-        }
     },
 
     onDelete: function()
     {
+        /*
         this.bindable.allowDelete().then({
             success: function() {
                 if (this.autoSync) {
@@ -228,6 +200,7 @@ Ext.define('KwfExt.editWindow.WindowController', {
             },
             scope: this
         });
+        */
     }
 
 });
