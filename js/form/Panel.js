@@ -23,6 +23,9 @@ Ext.define('KwfExt.form.Panel', {
                 record = record[0];
             }
         }
+
+        this.getForm().reset(); //to reset all validation errors; clearInvalid doesn't work
+
         if (record) {
             if (record.session !== this.lookupSession()) {
                 if (!record.isModel) {
@@ -39,7 +42,6 @@ Ext.define('KwfExt.form.Panel', {
             this.getViewModel().set('record', null);
         }
 
-        this.getForm().clearInvalid();
     },
     getRecord: function()
     {
