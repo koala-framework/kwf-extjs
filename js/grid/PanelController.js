@@ -501,6 +501,8 @@ Ext.define('KwfExt.grid.PanelController', {
             } else {
                 console.log('no changes');
             }
+        }).bind(this), (function(error) {
+            Ext.Msg.alert(trlKwf('Save'), error.validationMessage);
         }).bind(this));
 
         return promise;

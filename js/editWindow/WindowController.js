@@ -106,7 +106,8 @@ Ext.define('KwfExt.editWindow.WindowController', {
                 //console.log('no changes');
                 deferred.resolve();
             }
-        }).bind(this), (function() {
+        }).bind(this), (function(error) {
+            Ext.Msg.alert(trlKwf('Save'), error.validationMessage);
             deferred.reject();
         }).bind(this));
 

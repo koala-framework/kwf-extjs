@@ -38,24 +38,35 @@ Ext.define('KwfExt.session.SaveButtonController', {
         }, this);
 
         promise = promise.then((function() {
-            console.log('all valid. save now');
+            //console.log('all valid. save now');
             var session = this.getSession();
+
             if (session.getChangesForParent()) {
-                console.log('changes', session.getChangesForParent());
+                //console.log('changes', session.getChangesForParent());
                 var batch;
                 if (session.getParent()) {
-                    console.log('save to parent');
+                    //console.log('save to parent');
                     session.save();
                     batch = session.getParent().getSaveBatch();
                 } else {
                     batch = session.getSaveBatch();
                 }
+                batch.on('complete', function() {
+                    parentSessionView.unmask();
+                    if (!batch.hasException()) {
+                        parentSessionView.fireEvent('sessionsave');
+                    }
+                }, this);
+                parentSessionView.mask(trlKwf('Saving...'));
                 batch.start();
 
                 session.commit(); //mark session clean
             } else {
-                console.log('no changes');
+                //console.log('no changes');
             }
+        }).bind(this), (function(error) {
+            //console.log('Error', error);
+            Ext.Msg.alert(trlKwf('Save'), error.validationMessage);
         }).bind(this));
 
 

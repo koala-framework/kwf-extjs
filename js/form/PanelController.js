@@ -139,8 +139,9 @@ Ext.define('KwfExt.form.PanelController', {
     allowSave: function()
     {
         if (!this.isValid()) {
-            Ext.Msg.alert(this.saveValidateErrorTitle, this.saveValidateErrorMsg);
-            return Ext.Promise.reject();
+            return Ext.Promise.reject({
+                validationMessage: this.saveValidateErrorMsg
+            });
         }
         return this.mixins.saveable.allowSave.call(this);
     }
