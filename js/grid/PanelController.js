@@ -512,6 +512,18 @@ Ext.define('KwfExt.grid.PanelController', {
         }).bind(this));
 
         return promise;
+    },
+
+    onEditClick: function(button)
+    {
+        if (!this.getView().getEditWindow()) {
+            throw new Error('No EditWindow set');
+        }
+        var record = button.getWidgetRecord();
+        var win = this.getView().getEditWindow();
+        win.setTitle(trlKwf('Edit'));
+        win.setRecord(record);
+        win.show();
     }
 });
 
