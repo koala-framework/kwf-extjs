@@ -424,9 +424,9 @@ Ext.define('KwfExt.grid.PanelController', {
 //                     console.log('no, discard changes');
                     //discard changes
                     var sessionView = this.getView().findParentBy(function(i){return i.getSession()});
-                    Ext.each(sessionView.query("[session]"), function(i) {
-                        if (i.getSession().getChanges()) {
-                            var session = i.getSession();
+                    Ext.each(sessionView.query("[session]"), function(childView) {
+                        if (childView.getSession().getChanges()) {
+                            var session = childView.getSession();
                             var newSession;
                             if (session.getParent()) {
                                 newSession = session.getParent().spawn();
@@ -436,8 +436,14 @@ Ext.define('KwfExt.grid.PanelController', {
                                 });
                             }
 //                             console.log('set new session', newSession);
-                            i.setSession(newSession);
-                            i.getViewModel().setSession(newSession); //TODO might not have viewmodel? children might have viewmodel?
+                            childView.setSession(newSession);
+                            childView.getViewModel().setSession(newSession); //TODO might not have viewmodel? children might have viewmodel?
+                            Ext.each(childView.query("[viewModel]"), function(i) {
+                                if (i.getViewModel().getSession() == session) {
+                                    i.getViewModel().setSession(newSession);
+                                }
+                            }, this);
+
                             session.destroy();
                         }
                     }, this);

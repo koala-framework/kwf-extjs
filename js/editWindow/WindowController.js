@@ -144,6 +144,26 @@ Ext.define('KwfExt.editWindow.WindowController', {
                         if (record.phantom) {
                             record.drop();
                         }
+
+                        //create new session to destroy all made changes
+                        var newSession;
+                        if (session.getParent()) {
+                            newSession = session.getParent().spawn();
+                        } else {
+                            newSession = new Ext.data.Session({
+                                schema: session.getSchema()
+                            });
+                        }
+//                             console.log('set new session', newSession);
+                        this.view.setSession(newSession);
+                        this.getViewModel().setSession(newSession);
+                        Ext.each(this.view.query("[viewModel]"), function(i) {
+                            if (i.getViewModel().getSession() == session) {
+                                i.getViewModel().setSession(newSession);
+                            }
+                        }, this);
+                        session.destroy();
+
                         this.closeWindow();
                     } else if (btn == 'yes') {
                         this.doSave().then((function() {
