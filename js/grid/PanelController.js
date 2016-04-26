@@ -75,7 +75,9 @@ Ext.define('KwfExt.grid.PanelController', {
 
         var win = this.getView().getEditWindow();
         if (win && !win.isComponent) {
+            win.parent = this.view;
             win = Ext.ComponentManager.create(win);
+
             this.getView().setEditWindow(win);
             win.on('hide', function() {
                 var rec = win.getRecord();
