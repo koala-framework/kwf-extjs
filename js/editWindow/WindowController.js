@@ -34,6 +34,12 @@ Ext.define('KwfExt.editWindow.WindowController', {
             this.onCancel();
             return false;
         }, this);
+
+        this.view.on('show', function() {
+            if (this.focusOnEditSelector) {
+                this.view.down(this.focusOnEditSelector).focus();
+            }
+        }, this);
 /*
         this.bindable.view.on('savesuccess', function() {
             this.fireViewEvent('savesuccess');
@@ -52,9 +58,6 @@ Ext.define('KwfExt.editWindow.WindowController', {
         }
         this.view.show();
         this.bindable.load(row, store);
-        if (this.focusOnEditSelector) {
-            this.view.down(this.focusOnEditSelector).focus();
-        }
     },
 */
 /*
