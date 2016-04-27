@@ -144,6 +144,17 @@ Ext.define('KwfExt.form.PanelController', {
             });
         }
         return this.mixins.saveable.allowSave.call(this);
+    },
+
+    initViewModel: function()
+    {
+        this.callParent(arguments);
+
+        //when record changes clear invalid, required to remove initial validation when new record is laoded
+        //this can't be done in KwfExt.form.Panel::setRecord as the bind values are applied async
+        this.getViewModel().bind('{record}', function(r) {
+            this.view.getForm().clearInvalid();
+        }, this);
     }
 });
 
