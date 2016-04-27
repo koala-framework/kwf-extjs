@@ -75,7 +75,7 @@ Ext.define('KwfExt.grid.PanelController', {
 
         var win = this.getView().getEditWindow();
         if (win && !win.isComponent) {
-            win.parent = this.view;
+            win.parent = this.view; //set parent to inherit Session and ViewModel
             win = Ext.ComponentManager.create(win);
 
             this.getView().setEditWindow(win);
