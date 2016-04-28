@@ -353,11 +353,18 @@ Ext.define('KwfExt.grid.PanelController', {
     onBeforeSelect: function(sm, record)
     {
 //         console.log('onBeforeSelect', sm.getSelection());
-        var parentSessionView = this.getView().findParentBy(function(i){return i.getSession()});
+        var parentSessionView = null;
+        if (this.getView().getSession()) {
+            parentSessionView = this.getView();
+        } else {
+            parentSessionView = this.getView().findParentBy(function(i){return i.getSession()});
+        }
         if (parentSessionView) {
             var selection = this.getView().getSelection();
-            var isDirty = selection.length && selection[0].phantom;
-            Ext.each(parentSessionView.query("[session]"), function(i) {
+            var childSessionViews = parentSessionView.query("[session]");
+            var isDirty = false;
+            isDirty = childSessionViews.length && selection.length && selection[0].phantom;
+            Ext.each(childSessionViews, function(i) {
                 if (i.getSession().getChangesForParent()) {
 //                     console.log('dirty view', i, i.el.dom);
                     isDirty = true;
