@@ -112,7 +112,8 @@ Ext.define('KwfExt.grid.PanelController', {
             win.show();
         } else {
             var newRecord = this.getSession().createRecord(this.getView().getStore().getModel().$className, {});
-            this.getView().setSelection(this.getView().getStore().add(newRecord));
+            this.getView().getStore().add(newRecord);
+            this.getView().ensureVisible(newRecord, { select: true});
         }
     },
 
