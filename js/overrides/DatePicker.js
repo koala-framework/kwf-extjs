@@ -4,7 +4,7 @@ Ext.define('KwfExt.overrides.DatePicker', {
         value: null
     },
     onSelect: function() {
-        this.callParent(arguments);
-        this.updateValue(this.value);
+        if (this.updateValue) this.updateValue(this.value);
+        return this.callParent(arguments);
     }
 });
