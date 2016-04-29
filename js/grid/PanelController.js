@@ -91,6 +91,22 @@ Ext.define('KwfExt.grid.PanelController', {
             }, this);
         }
 
+        //reload when panel gets shown (again) in a tab panel (directly or indirectly)
+        this.getView().on('render', function() {
+            var parent = this.getView();
+            while (parent.getRefOwner()) {
+                if (parent.getRefOwner().getLayout() instanceof Ext.layout.container.Card) {
+                    parent.on('show', function(panel) {
+                        if (!this.getView().isHierarchicallyHidden()) {
+                            var store = this.getView().getStore();
+                            if (store && store.isLoaded()) store.reload();
+                        }
+                    }, this);
+                }
+                parent = parent.getRefOwner();
+            }
+        }, this);
+
 
         this.callParent(arguments);
     },
