@@ -14,6 +14,9 @@ Ext.define('KwfExt.app.MainController', {
 
     init: function()
     {
+        Ext.enableAriaPanels = false;
+        Ext.enableAriaButtons = false;
+
         if (Ext.util.LocalStorage.supported) {
             Ext.state.Manager.setProvider(Ext.state.LocalStorageProvider.create({
                 prefix: this.statePrefix
