@@ -10,6 +10,7 @@ Ext.define('KwfExt.grid.Panel', {
     viewModel: {
         type: 'KwfExt.grid.Panel'
     },
+    stateful: true,
     config: {
         editWindow: null
     },
