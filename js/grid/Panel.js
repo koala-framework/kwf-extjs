@@ -9,6 +9,7 @@ Ext.define('KwfExt.grid.Panel', {
         'Ext.form.field.Text',
         'Ext.toolbar.TextItem',
         'KwfExt.session.SaveButton',
+        'Ext.grid.column.Widget',
         'KwfExt.mixin.Bindable' //fixes issues for storing selection in viewmodel
     ],
     controller: 'KwfExt.grid.Panel',
@@ -24,7 +25,8 @@ Ext.define('KwfExt.grid.Panel', {
         deleteButton: false,
         exportXlsButton: false,
         filters: false,
-        queryFilter: false
+        queryFilter: false,
+        editWidgetColumn: false
     },
     viewConfig: {
         preserveScrollOnRefresh: true
@@ -81,6 +83,12 @@ Ext.define('KwfExt.grid.Panel', {
         if (dockedItems.length) {
             this.dockedItems = dockedItems;
         }
+
+        var columns = this._getProperty("columns");
+        if (this.getEditWidgetColumn()) {
+            columns.push(this.getEditWidgetColumn());
+        }
+        this.columns = columns;
 
         this.callParent(arguments);
     },
@@ -148,6 +156,21 @@ Ext.define('KwfExt.grid.Panel', {
                 flex: true,
                 emptyText: trlKwf('Filter'),
                 name: 'query'
+            }, b));
+        }
+        return b
+    },
+    applyEditWidgetColumn: function(b) {
+        if (b && !b.isComponent) {
+            b = Ext.create(Ext.apply({
+                xtype: 'widgetcolumn',
+                width: 50,
+                widget: {
+                    xtype: 'button',
+                    tooltip: trlKwf('Edit'),
+                    glyph: 'xf040@FontAwesome',
+                    handler: 'onEditClick'
+                }
             }, b));
         }
         return b
