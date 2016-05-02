@@ -3,7 +3,8 @@ Ext.define('KwfExt.editWindow.Window', {
     alias: 'widget.KwfExt.editWindow.window',
     requires: [
         'KwfExt.editWindow.WindowController',
-        'KwfExt.editWindow.WindowModel'
+        'KwfExt.editWindow.WindowModel',
+        'Ext.button.Button'
     ],
     controller: 'KwfExt.editWindow.window',
     viewModel: {
