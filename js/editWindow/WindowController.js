@@ -192,39 +192,37 @@ Ext.define('KwfExt.editWindow.WindowController', {
 
     onDelete: function()
     {
-        /*
-        this.bindable.allowDelete().then({
-            success: function() {
-                if (this.autoSync) {
-                    Ext.Msg.show({
-                        title: this.deleteConfirmTitle,
-                        msg: this.deleteConfirmText,
-                        icon: Ext.MessageBox.QUESTION,
-                        buttons: Ext.Msg.YESNO,
-                        scope: this,
-                        fn: function(button) {
-                            if (button == 'yes') {
-                                if (this._loadedStore) {
-                                    this._loadedStore.remove(this.getLoadedRecord());
-                                    this._loadedStore.sync();
-                                } else {
-                                    this.getLoadedRecord().destory();
-                                }
-                                this.closeWindow();
-                            }
-                        }
-                    });
-                } else {
-                    if (!this._loadedStore) {
-                        Ext.Error.raise("Can't delete record without store");
+        Ext.Msg.show({
+            title: this.deleteConfirmTitle,
+            msg: this.deleteConfirmText,
+            icon: Ext.MessageBox.QUESTION,
+            buttons: Ext.Msg.YESNO,
+            scope: this,
+            fn: function(button) {
+                if (button == 'yes') {
+                    this.getView().getRecord().drop();
+
+                    var session = this.getSession();
+                    var batch;
+                    if (session.getParent()) {
+                        session.save();
+                        batch = session.getParent().getSaveBatch();
+                    } else {
+                        batch = session.getSaveBatch();
                     }
-                    this._loadedStore.remove(this.getLoadedRecord());
-                    this.closeWindow();
+                    batch.on('complete', function() {
+                        this.view.unmask();
+                        if (!batch.hasException()) {
+                            this.closeWindow();
+                        }
+                    }, this);
+                    this.view.mask(trlKwf('Deleting...'));
+                    batch.start();
+
+                    session.commit(); //mark session clean
                 }
-            },
-            scope: this
+            }
         });
-        */
     }
 
 });
