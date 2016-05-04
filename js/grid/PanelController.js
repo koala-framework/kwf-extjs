@@ -18,6 +18,8 @@ Ext.define('KwfExt.grid.PanelController', {
     saveChangesTitle: trlKwf('Save'),
     saveChangesMsg: trlKwf('Do you want to save the changes?'),
 
+    saveDelete: true, //if onDelete should save batch the session or just drop the record
+
     control: {
         '#': {
             beforeselect: 'onBeforeSelect'
@@ -128,20 +130,51 @@ Ext.define('KwfExt.grid.PanelController', {
     },
 
     onDelete: function() {
-        Ext.Msg.show({
-            title: this.deleteConfirmTitle,
-            msg: this.deleteConfirmText,
-            icon: Ext.MessageBox.QUESTION,
-            buttons: Ext.Msg.YESNO,
-            scope: this,
-            fn: function(button) {
-                if (button == 'yes') {
-                    Ext.each(this.getView().getSelectionModel().getSelection(), function(record) {
-                        record.erase();
-                    }, this);
+        if (!this.saveDelete) {
+            Ext.each(this.getView().getSelectionModel().getSelection(), function(record) {
+                record.drop();
+            }, this);
+        } else {
+            Ext.Msg.show({
+                title: this.deleteConfirmTitle,
+                msg: this.deleteConfirmText,
+                icon: Ext.MessageBox.QUESTION,
+                buttons: Ext.Msg.YESNO,
+                scope: this,
+                fn: function(button) {
+                    if (button == 'yes') {
+                        Ext.each(this.getView().getSelectionModel().getSelection(), function(record) {
+                            record.drop();
+                        }, this);
+
+                        var sessionView = null;
+                        if (this.getView().getSession()) {
+                            sessionView = this.getView();
+                        } else {
+                            sessionView = this.getView().findParentBy(function(i){return i.getSession()});
+                        }
+                        var session = sessionView.getSession();
+                        var batch;
+                        if (session.getParent()) {
+                            session.save();
+                            batch = session.getParent().getSaveBatch();
+                        } else {
+                            batch = session.getSaveBatch();
+                        }
+                        batch.on('complete', function() {
+                            sessionView.unmask();
+                            if (!batch.hasException()) {
+                                sessionView.fireEvent('sessionsave');
+                            }
+                        }, this);
+                        sessionView.mask(trlKwf('Deleting...'));
+                        batch.start();
+
+                        session.commit(); //mark session clean
+                    }
                 }
-            }
-        });
+            });
+        }
     },
 
     onXlsExport: function()
