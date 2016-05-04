@@ -14,6 +14,16 @@ Ext.define('KwfExt.grid.PanelController', {
     exportProgressMsg: trlKwf('Exporting rows...'),
     excelExportWorksheetName: trlKwf('Worksheet'),
     postBackUrl: '/kwf/media/post-back/json-upload',
+
+    saveChangesTitle: trlKwf('Save'),
+    saveChangesMsg: trlKwf('Do you want to save the changes?'),
+
+    control: {
+        '#': {
+            beforeselect: 'onBeforeSelect'
+        }
+    },
+
     init: function(view) {
 
         if (view.getStore()) this.onBindStore();
@@ -310,28 +320,6 @@ Ext.define('KwfExt.grid.PanelController', {
                     scope: this
                 });
             }
-        }
-    },
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    saveChangesTitle: trlKwf('Save'),
-    saveChangesMsg: trlKwf('Do you want to save the changes?'),
-
-    control: {
-        '#': {
-            beforeselect: 'onBeforeSelect'
         }
     },
 
