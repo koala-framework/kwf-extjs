@@ -5,7 +5,8 @@ Ext.define('KwfExt.grid.PanelController', {
     extend: 'Ext.app.ViewController',
     alias: 'controller.KwfExt.grid.Panel',
     requires: [
-        'Ext.Deferred'
+        'Ext.Deferred',
+        'KwfExt.session.Save'
     ],
     deleteConfirmTitle: trlKwf('Delete'),
     deleteConfirmText: trlKwf('Do you really wish to remove this entry?'),
@@ -432,48 +433,15 @@ Ext.define('KwfExt.grid.PanelController', {
     },
 
 
-    //TODO kopie von SaveButtonController, das gehört vereinheitlicht - wie auch immer
     doSave: function()
     {
         var sessionView = null;
-        //TODO da können mehrere sessions vorhanden sein
+        //TODO there can be multiple sessions
         Ext.each(this.getView().findParentBy(function(i){return i.getSession()}).query("[session]"), function(i) {
             sessionView = i;
         });
 
-        var promise;
-        if (sessionView.getController().isSaveable) {
-            promise = sessionView.getController().allowSave();
-        } else {
-            promise = Ext.Promise.resolve();
-        }
-        Ext.each(sessionView.query('[controller]'), function(i) {
-            if (i.getController().isSaveable) {
-                promise = promise.then(function() {
-                    return i.getController().allowSave();
-                });
-            }
-        }, this);
-
-        promise = promise.then((function() {
-            var session = sessionView.getSession();
-            if (session.getChangesForParent()) {
-                var batch;
-                if (session.getParent()) {
-                    session.save();
-                    batch = session.getParent().getSaveBatch();
-                } else {
-                    batch = session.getSaveBatch();
-                }
-                batch.start();
-
-                session.commit(); //mark session clean
-            }
-        }).bind(this), (function(error) {
-            Ext.Msg.alert(trlKwf('Save'), error.validationMessage);
-        }).bind(this));
-
-        return promise;
+        return KwfExt.session.Save.saveSession(sessionView);
     },
 
     onEditClick: function(button)

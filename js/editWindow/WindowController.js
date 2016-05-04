@@ -1,7 +1,9 @@
 Ext.define('KwfExt.editWindow.WindowController', {
     extend: 'Ext.app.ViewController',
     alias: 'controller.KwfExt.editWindow.window',
-
+    requires: [
+        'KwfExt.session.Save'
+    ],
     focusOnEditSelector: 'field',
     autoSync: true,
 
@@ -31,51 +33,9 @@ Ext.define('KwfExt.editWindow.WindowController', {
 */
     },
 
-    //TODO kopie von SaveButtonController, das gehört vereinheitlicht - wie auch immer
     doSave: function()
     {
-        var deferred = new Ext.Deferred()
-
-        var promise = Ext.Promise.resolve();
-        Ext.each(this.view.query('[controller]'), function(i) {
-            if (i.getController().isSaveable) {
-                promise = promise.then(function() {
-                    return i.getController().allowSave();
-                });
-            }
-        }, this);
-
-        promise = promise.then((function() {
-            var session = this.getSession();
-            if (session.getChangesForParent()) {
-                var batch;
-                if (session.getParent()) {
-                    session.save();
-                    batch = session.getParent().getSaveBatch();
-                } else {
-                    batch = session.getSaveBatch();
-                }
-                batch.on('complete', function() {
-                    this.view.unmask();
-                    if (!batch.hasException()) {
-                        deferred.resolve();
-                    } else {
-                        deferred.reject();
-                    }
-                }, this);
-                this.view.mask(trlKwf('Saving...'));
-                batch.start();
-
-                session.commit(); //mark session clean
-            } else {
-                deferred.resolve();
-            }
-        }).bind(this), (function(error) {
-            Ext.Msg.alert(trlKwf('Save'), error.validationMessage);
-            deferred.reject();
-        }).bind(this));
-
-        return deferred.promise;
+        return KwfExt.session.Save.saveSession(this.view);
     },
 
     onSave: function()
