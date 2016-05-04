@@ -131,6 +131,7 @@ Ext.define('KwfExt.editWindow.WindowController', {
                         this.view.unmask();
                         if (!batch.hasException()) {
                             this.closeWindow();
+                            this.view.fireEvent('sessionsave');
                         }
                     }, this);
                     this.view.mask(trlKwf('Deleting...'));
