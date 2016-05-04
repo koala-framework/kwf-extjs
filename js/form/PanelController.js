@@ -11,9 +11,6 @@ Ext.define('KwfExt.form.PanelController', {
         'Ext.Promise'
     ],
 
-    saveValidateErrorTitle: 'Save',
-    saveValidateErrorMsg: "Can't save, please fill all marked fields correctly.",
-
     mixins: {
         saveable: 'KwfExt.controller.Saveable'
     },

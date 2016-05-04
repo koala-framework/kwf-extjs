@@ -5,12 +5,12 @@ Ext.define('KwfExt.editWindow.WindowController', {
     focusOnEditSelector: 'field',
     autoSync: true,
 
-    deleteConfirmText: 'Do you really wish to remove this entry?',
-    deleteConfirmTitle: 'Delete',
+    deleteConfirmText: trlKwf('Do you really wish to remove this entry?'),
+    deleteConfirmTitle: trlKwf('Delete'),
     addTitle: 'Add',
     editTitle: 'Edit',
-    saveChangesTitle: 'Save',
-    saveChangesMsg: 'Do you want to save the changes?',
+    saveChangesTitle: trlKwf('Save'),
+    saveChangesMsg: trlKwf('Do you want to save the changes?'),
 
     init: function()
     {

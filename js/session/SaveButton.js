@@ -5,6 +5,6 @@ Ext.define('KwfExt.session.SaveButton', {
         'KwfExt.session.SaveButtonController'
     ],
     controller: 'KwfExt.session.saveButton',
-    text: trl('Speichern'),
+    text: trlKwf('Save'),
     glyph: 'xf0c7@FontAwesome'
 });
