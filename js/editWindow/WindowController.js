@@ -14,22 +14,6 @@ Ext.define('KwfExt.editWindow.WindowController', {
 
     init: function()
     {
-/*
-        if (!this.view) Ext.Error.raise('view is required');
-        if (!(this.view instanceof Ext.window.Window)) Ext.Error.raise('view needs to be a Ext.window.Window');
-
-        if (!this.bindable) {
-            //by default (most common case) get form
-            this.bindable = this.view.down('> form');
-        }
-        if (!this.bindable) Ext.Error.raise('bindable config is required');
-        if (!this.bindable.isBindableController && this.bindable.getController) {
-            this.bindable = this.bindable.getController();
-        }
-        if (!this.bindable.isBindableController) {
-            Ext.Error.raise('bindable config needs to be a Densa.mvc.bindable.Interface');
-        }
-*/
         this.view.on('beforeclose', function() {
             this.onCancel();
             return false;
@@ -46,26 +30,7 @@ Ext.define('KwfExt.editWindow.WindowController', {
         }, this);
 */
     },
-/*
-    //store is optional, used for sync
-    openEditWindow: function(row, store)
-    {
-        this._loadedStore = store;
-        if (row.phantom) {
-            this.view.setTitle(this.addTitle);
-        } else {
-            this.view.setTitle(this.editTitle);
-        }
-        this.view.show();
-        this.bindable.load(row, store);
-    },
-*/
-/*
-    validateAndSubmit: function(options)
-    {
-        return this.bindable.validateAndSubmit(options);
-    },
-*/
+
     //TODO kopie von SaveButtonController, das gehört vereinheitlicht - wie auch immer
     doSave: function()
     {
@@ -81,13 +46,10 @@ Ext.define('KwfExt.editWindow.WindowController', {
         }, this);
 
         promise = promise.then((function() {
-            //console.log('all valid. save now');
             var session = this.getSession();
             if (session.getChangesForParent()) {
-                //console.log('changes', session.getChangesForParent());
                 var batch;
                 if (session.getParent()) {
-                    //console.log('save to parent');
                     session.save();
                     batch = session.getParent().getSaveBatch();
                 } else {
@@ -101,12 +63,11 @@ Ext.define('KwfExt.editWindow.WindowController', {
                         deferred.reject();
                     }
                 }, this);
-                this.view.mask('Saving...');
+                this.view.mask(trlKwf('Saving...'));
                 batch.start();
 
                 session.commit(); //mark session clean
             } else {
-                //console.log('no changes');
                 deferred.resolve();
             }
         }).bind(this), (function(error) {
@@ -135,7 +96,6 @@ Ext.define('KwfExt.editWindow.WindowController', {
         record.phantom = isPhantom;
 
         if (hasChanges) {
-            //console.log('changes', this.getSession().getChangesForParent());
             Ext.Msg.show({
                 title: this.saveChangesTitle,
                 msg: this.saveChangesMsg,
@@ -157,7 +117,6 @@ Ext.define('KwfExt.editWindow.WindowController', {
                                 schema: session.getSchema()
                             });
                         }
-//                             console.log('set new session', newSession);
                         this.view.setSession(newSession);
                         this.getViewModel().setSession(newSession);
                         Ext.each(this.view.query("[viewModel]"), function(i) {

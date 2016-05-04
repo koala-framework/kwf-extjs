@@ -23,22 +23,6 @@ Ext.define('KwfExt.editWindow.Window', {
     closeAction: 'hide',
     constrainHeader: true,
     padding: 10,
-    /*
-    openEditWindow: function(row, store)
-    {
-        this._loadedStore = store;
-        if (row.phantom) {
-            this.view.setTitle(this.addTitle);
-        } else {
-            this.view.setTitle(this.editTitle);
-        }
-        this.view.show();
-        this.bindable.load(row, store);
-        if (this.focusOnEditSelector) {
-            this.view.down(this.focusOnEditSelector).focus();
-        }
-    }
-    */
 
     _getProperty: function(c)
     {

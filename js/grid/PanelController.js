@@ -14,31 +14,6 @@ Ext.define('KwfExt.grid.PanelController', {
     excelExportWorksheetName: trlKwf('Worksheet'),
     postBackUrl: '/kwf/media/post-back/json-upload',
     init: function(view) {
-/*
-        var addButton = view.lookupReference('addButton');
-        if (addButton) addButton.on('click', this.onAdd, this);
-
-        var saveButton = view.lookupReference('saveButton');
-        if (saveButton) saveButton.on('click', this.onSave, this);
-
-        var deleteButton = view.lookupReference('deleteButton');
-        if (deleteButton) {
-            view.on('selectionchange', function(model, rows) {
-                if (rows[0]) {
-                    if (deleteButton) deleteButton.enable();
-                } else {
-                    if (deleteButton) deleteButton.disable();
-                }
-            }, this);
-            deleteButton.on('click', this.onDelete, this);
-        }
-
-        var exportXlsButton = view.lookupReference('exportXlsButton');
-        if (exportXlsButton) exportXlsButton.on('click', this.onXlsExport, this);
-
-        var exportCsvButton = view.lookupReference('exportCsvButton');
-        if (exportCsvButton) exportCsvButton.on('click', this.onCsvExport, this);
-*/
 
         if (view.getStore()) this.onBindStore();
         Ext.Function.interceptAfter(view, "bindStore", this.onBindStore, this);
@@ -149,14 +124,7 @@ Ext.define('KwfExt.grid.PanelController', {
             }
         });
     },
-/*
-    onSave: function() {
-        var batch = this.getViewModel().getSession().getSaveBatch();
-        if (batch) {
-            batch.start();
-        }
-    },
-*/
+
     onXlsExport: function()
     {
         this._exportData({
@@ -368,7 +336,6 @@ Ext.define('KwfExt.grid.PanelController', {
 
     onBeforeSelect: function(sm, record)
     {
-//         console.log('onBeforeSelect', sm.getSelection());
         var parentSessionView = null;
         if (this.getView().getSession()) {
             parentSessionView = this.getView();
@@ -382,7 +349,6 @@ Ext.define('KwfExt.grid.PanelController', {
             isDirty = childSessionViews.length && selection.length && selection[0].phantom;
             Ext.each(childSessionViews, function(i) {
                 if (i.getSession().getChangesForParent()) {
-//                     console.log('dirty view', i, i.el.dom);
                     isDirty = true;
                 }
             }, this);
@@ -397,37 +363,15 @@ Ext.define('KwfExt.grid.PanelController', {
             if (isDirty) {
                 this.askSaveChanges().then({
                     success: function() {
-//                         console.log('success!');
                         this.getView().setSelection(record);
                     },
                     failure: function() {
-//                         console.log('failure!');
                     },
                     scope: this
                 });
                 return false;
             }
         }
-
-//             var isDirty = false;
-//             var sessionView = this.getView().findParentBy(function(i){return i.getSession()});
-//             Ext.each(sessionView.query("[session]"), function(i) {
-//                 if (i.getSession().getChanges()) {
-//                     isDirty = true;
-//                 }
-//             }, this);
-//             if (isDirty) {
-//                 this.askSaveChanges().then({
-//                     success: function() {
-//                         this.getView().setSelection(record);
-//                     },
-//                     failure: function() {
-//                         this.getView().setSelection(bindable.getLoadedRecord()); //TODO
-//                     },
-//                     scope: this
-//                 });
-//                 return false;
-//             }
     },
 
     askSaveChanges: function()
@@ -447,7 +391,6 @@ Ext.define('KwfExt.grid.PanelController', {
                             deferred.reject();
                         });
                 } else if (button == 'no') {
-//                     console.log('no, discard changes');
                     //discard changes
                     var sessionView = this.getView().findParentBy(function(i){return i.getSession()});
                     Ext.each(sessionView.query("[session]"), function(childView) {
@@ -461,7 +404,6 @@ Ext.define('KwfExt.grid.PanelController', {
                                     schema: session.getSchema()
                                 });
                             }
-//                             console.log('set new session', newSession);
                             childView.setSession(newSession);
                             childView.getViewModel().setSession(newSession); //TODO might not have viewmodel? children might have viewmodel?
                             Ext.each(childView.query("[viewModel]"), function(i) {
@@ -478,7 +420,6 @@ Ext.define('KwfExt.grid.PanelController', {
                         this.getView().suspendEvents();
                         this.getView().setSelection([]);
                         this.getView().resumeEvents();
-//                         console.log('DROOOP');
                         selection[0].drop();
                     }
                     deferred.resolve();
@@ -515,13 +456,10 @@ Ext.define('KwfExt.grid.PanelController', {
         }, this);
 
         promise = promise.then((function() {
-            console.log('all valid. save now');
             var session = sessionView.getSession();
             if (session.getChangesForParent()) {
-                console.log('changes', session.getChangesForParent());
                 var batch;
                 if (session.getParent()) {
-                    console.log('save to parent');
                     session.save();
                     batch = session.getParent().getSaveBatch();
                 } else {
@@ -530,8 +468,6 @@ Ext.define('KwfExt.grid.PanelController', {
                 batch.start();
 
                 session.commit(); //mark session clean
-            } else {
-                console.log('no changes');
             }
         }).bind(this), (function(error) {
             Ext.Msg.alert(trlKwf('Save'), error.validationMessage);

@@ -28,14 +28,11 @@ Ext.define('KwfExt.form.Panel', {
                 if (!record.isModel) {
                     throw new Error("record is not a model");
                 }
-                //console.log('linkTo', record);
                 this.getViewModel().linkTo('record', record);
             } else {
-                //console.log('set', record);
                 this.getViewModel().set('record', record);
             }
         } else {
-            //console.log('set', record);
             this.getViewModel().set('record', null);
         }
     },
