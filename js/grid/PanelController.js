@@ -98,7 +98,7 @@ Ext.define('KwfExt.grid.PanelController', {
     onAdd: function() {
         if (this.getView().getEditWindow()) {
             var win = this.getView().getEditWindow();
-            win.setTitle('Add');
+            win.setTitle(trlKwf('Add'));
             var newRecord = win.getSession().createRecord(this.getView().getStore().getModel().$className, {});
             win.setRecord(newRecord);
             win.show();
@@ -326,8 +326,8 @@ Ext.define('KwfExt.grid.PanelController', {
 
 
 
-    saveChangesTitle: 'Save',
-    saveChangesMsg: 'Do you want to save the changes?',
+    saveChangesTitle: trlKwf('Save'),
+    saveChangesMsg: trlKwf('Do you want to save the changes?'),
 
     control: {
         '#': {

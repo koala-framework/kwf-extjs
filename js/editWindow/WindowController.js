@@ -9,8 +9,6 @@ Ext.define('KwfExt.editWindow.WindowController', {
 
     deleteConfirmText: trlKwf('Do you really wish to remove this entry?'),
     deleteConfirmTitle: trlKwf('Delete'),
-    addTitle: 'Add',
-    editTitle: 'Edit',
     saveChangesTitle: trlKwf('Save'),
     saveChangesMsg: trlKwf('Do you want to save the changes?'),
 
