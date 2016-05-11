@@ -1,3 +1,10 @@
+/**
+ * https://www.sencha.com/forum/showthread.php?308051-Session-store-doesnt-refresh-records-on-reload
+ *
+ * Work around for EXTJS-17728
+ *
+ * Reload record in session when store reloads and keep local changes.
+ **/
 Ext.define('KwfExt.overrides.DataSession', {
     override: 'Ext.data.Session',
 
