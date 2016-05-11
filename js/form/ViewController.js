@@ -5,6 +5,7 @@ Ext.define('KwfExt.form.ViewController', {
     saveValidateErrorMsg: trlKwf("Can't save, please fill all red underlined fields correctly."),
     savingMaskText: trlKwf('Saving...'),
     validatingMaskText: trlKwf('Validating...'),
+    remoteValidation: false,
 
     init: function(view) {
         var saveButton = view.lookupReference('saveButton');
@@ -75,7 +76,38 @@ Ext.define('KwfExt.form.ViewController', {
     },
 
     isValid: function() {
-        return this.getView().isValid();
+        var isValid = this.getView().isValid();
+        if (!isValid || !this.remoteValidation) {
+            return isValid;
+        }
+
+        var validationUrl = this.getView().getRecord().getProxy().url + '/' + this.getView().getRecord().get('id');
+        if (this.getView().getRecord().phantom) {
+            validationUrl += '/action/validate-insert';
+        } else {
+            validationUrl += '/action/validate-update';
+        }
+        var deferred = new Ext.promise.Deferred();
+        Ext.Ajax.request({
+            url: validationUrl,
+            params: this.getValuesForRemoteValidation(),
+            success: function(response) {
+                var result = Ext.JSON.decode(response.responseText);
+                if (result.success) {
+                    deferred.resolve();
+                } else {
+                    deferred.reject({
+                        msg: result.error
+                    });
+                }
+            },
+            scope: this
+        });
+        return deferred.promise;
+    },
+
+    getValuesForRemoteValidation: function() {
+        return this.getView().getValues();
     },
 
     allowSave: function()
