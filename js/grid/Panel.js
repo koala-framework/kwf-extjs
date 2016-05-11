@@ -31,7 +31,7 @@ Ext.define('KwfExt.grid.Panel', {
     viewConfig: {
         preserveScrollOnRefresh: true
     },
-    publishes: ['selection', 'store'],
+    publishes: ['selection'],
 
     _getProperty: function(c)
     {
