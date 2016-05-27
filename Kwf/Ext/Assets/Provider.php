@@ -86,10 +86,10 @@ class Kwf_Ext_Assets_Provider extends Kwf_Assets_Provider_Abstract
             }
             foreach ($files as $file) {
                 if ($file == VENDOR_PATH.'/bower_components/extjs/packages/core/src/lang/Error.js') {
-                    return new Kwf_Assets_Dependency_File_Js('kwfext/Error.js');
+                    return new Kwf_Assets_Dependency_File_Js($this->_providerList, 'kwfext/Error.js');
                 }
                 if (file_exists(VENDOR_PATH.'/bower_components/extjs'.$file)) {
-                    return new Kwf_Ext_Assets_JsDependency('ext'.$file);
+                    return new Kwf_Ext_Assets_JsDependency($this->_providerList, 'ext'.$file);
                 }
             }
             return null;
@@ -299,11 +299,11 @@ class Kwf_Ext_Assets_Provider extends Kwf_Assets_Provider_Abstract
             $additionalDeps[] = 'Ext.app.ViewModel';
             $additionalDeps[] = 'Ext.class.Loader';
             //override with same name also in ext/overrides, so add that manually
-            $deps[Kwf_Assets_Dependency_Abstract::DEPENDENCY_TYPE_USES][] = new Kwf_Ext_Assets_JsDependency('ext/packages/core/overrides/app/Application.js');
+            $deps[Kwf_Assets_Dependency_Abstract::DEPENDENCY_TYPE_USES][] = new Kwf_Ext_Assets_JsDependency($this->_providerList, 'ext/packages/core/overrides/app/Application.js');
         } else if ($dependency->getFileNameWithType() == 'ext/classic/classic/src/ZIndexManager.js') {
             $additionalDeps[] = 'Ext.GlobalEvents';
         } else if ($dependency->getFileNameWithType() == 'ext/packages/core/src/Ext.js') {
-            array_unshift($deps[Kwf_Assets_Dependency_Abstract::DEPENDENCY_TYPE_REQUIRES], new Kwf_Ext_Assets_Dependency_Manifest());
+            array_unshift($deps[Kwf_Assets_Dependency_Abstract::DEPENDENCY_TYPE_REQUIRES], new Kwf_Ext_Assets_Dependency_Manifest($this->_providerList));
             $additionalDeps[] = 'Ext.Boot';
         }
         foreach ($additionalDeps as $i) {

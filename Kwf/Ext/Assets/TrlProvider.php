@@ -6,7 +6,7 @@ class Kwf_Ext_Assets_TrlProvider extends Kwf_Assets_Provider_Abstract
         if ($dependency instanceof Kwf_Ext_Assets_JsDependency && $dependency->getFileNameWithType() == 'ext/packages/core/src/class/Loader.js') {
             return array(
                 Kwf_Assets_Dependency_Abstract::DEPENDENCY_TYPE_USES => array(
-                    new Kwf_Assets_Dependency_File_Js('kwfext/ext-lang-en.js')
+                    new Kwf_Assets_Dependency_File_Js($this->_providerList, 'kwfext/ext-lang-en.js')
                 )
             );
         }

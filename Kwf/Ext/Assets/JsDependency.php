@@ -1,21 +1,15 @@
 <?php
 class Kwf_Ext_Assets_JsDependency extends Kwf_Assets_Dependency_File_Js
 {
-    public function _getRawContents($language)
+    public function getContentsPacked()
     {
-        $ret = parent::_getRawContents($language);
-        if (substr($ret, -1) != "\n") {
-            $ret .= "\n";
-        }
-        if ($this->getFileNameWithType() == 'ext/packages/core/src/Ext.js') {
-//             $ret = "Ext.sandboxName = 'Ext4';\n".$ret;
-//             $ret = "Ext.isSandboxed = true;\n".$ret;
-//             $ret = "Ext.buildSettings = { baseCSSPrefix: \"x4-\", scopeResetCSS: true };\n".$ret;
-        } else if ($this->getFileNameWithType() == 'ext/packages/core/src/class/Loader.js') {
-            $ret .= "\n";
-            $ret .= "Ext.Loader.setConfig({\n";
-            $ret .= "    enabled: false\n";
-            $ret .= "});\n";
+        $ret = parent::getContentsPacked();
+        if ($this->getFileNameWithType() == 'ext/packages/core/src/class/Loader.js') {
+            $add  = "\n";
+            $add .= "Ext.Loader.setConfig({\n";
+            $add .= "    enabled: false\n";
+            $add .= "});\n";
+            $ret->concat(Kwf_SourceMaps_SourceMap::createEmptyMap($add));
         }
         return $ret;
     }

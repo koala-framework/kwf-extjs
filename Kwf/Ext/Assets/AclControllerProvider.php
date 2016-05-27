@@ -18,7 +18,7 @@ class Kwf_Ext_Assets_AclControllerProvider extends Kwf_Assets_Provider_Abstract
             if ($deps) {
                 array_unshift($deps, $this->_providerList->findDependency('Ext.app.Application'));
             }
-            return new Kwf_Assets_Dependency_Dependencies($deps, $dependencyName);
+            return new Kwf_Assets_Dependency_Dependencies($this->_providerList, $deps, $dependencyName);
         }
         return null;
     }
