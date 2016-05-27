@@ -1,0 +1,51 @@
+// overrides extjs/classic/theme-base/sass/etc/mixins/css-outline.scss be cause of nested mixins (which is invalid sass)
+@mixin css-outline-pseudo(
+    $width: 1px,
+    $style: solid,
+    $color: #000,
+    $offset: 0,
+    $border-width: 0
+) {
+    &:after {
+        position: absolute;
+        content: ' ';
+        top: -$offset - $width - top($border-width) ;
+        right: -$offset - $width - right($border-width);
+        bottom: -$offset - $width - bottom($border-width);
+        left: -$offset - $width - left($border-width);
+
+        border: $width $style $color;
+        pointer-events: none;
+    }
+}
+
+@mixin css-outline(
+    $width: 1px,
+    $style: solid,
+    $color: #000,
+    $offset: 0,
+    $border-width: 0,
+    $pseudo: false
+) {
+
+    @if $pseudo {
+        @include css-outline-pseudo(
+            $width: $width,
+            $style: $style,
+            $color: $color,
+            $offset: $offset,
+            $border-width: $border-width
+        );
+    } @else {
+        outline: $width $style $color;
+        outline-offset: $offset;
+
+        @if $include-ie {
+            .#{$prefix}ie8 & {
+                outline: none;
+                @include css-outline-pseudo;
+
+            }
+        }
+    }
+}

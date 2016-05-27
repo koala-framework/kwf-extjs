@@ -1,7 +1,7 @@
 <?php
 class Kwf_Ext_Assets_Provider extends Kwf_Assets_Provider_Abstract
 {
-    private static function _getAliasClasses()
+    public static function _getAliasClasses()
     {
         static $classes;
         if (isset($classes)) return $classes;
@@ -286,9 +286,10 @@ class Kwf_Ext_Assets_Provider extends Kwf_Assets_Provider_Abstract
         }
 
         if ($dependency->getFileNameWithType() == 'ext/classic/classic/src/panel/Panel.js') {
-            $deps[Kwf_Assets_Dependency_Abstract::DEPENDENCY_TYPE_REQUIRES][] = new Kwf_Ext_Assets_CssDependency('ext/build/classic/theme-triton/resources/theme-triton-all_1.css');
-            $deps[Kwf_Assets_Dependency_Abstract::DEPENDENCY_TYPE_REQUIRES][] = new Kwf_Ext_Assets_CssDependency('ext/build/classic/theme-triton/resources/theme-triton-all_2.css');
-            $deps[Kwf_Assets_Dependency_Abstract::DEPENDENCY_TYPE_REQUIRES][] = new Kwf_Ext_Assets_JsDependency('ext/build/classic/theme-triton/theme-triton-debug.js');
+            //$deps[Kwf_Assets_Dependency_Abstract::DEPENDENCY_TYPE_REQUIRES][] = new Kwf_Ext_Assets_CssDependency($this->_providerList, 'ext/build/classic/theme-triton/resources/theme-triton-all_1.css');
+            //$deps[Kwf_Assets_Dependency_Abstract::DEPENDENCY_TYPE_REQUIRES][] = new Kwf_Ext_Assets_CssDependency($this->_providerList, 'ext/build/classic/theme-triton/resources/theme-triton-all_2.css');
+            //$deps[Kwf_Assets_Dependency_Abstract::DEPENDENCY_TYPE_REQUIRES][] = new Kwf_Ext_Assets_CssDependency($this->_providerList, 'web/out.css');
+            $deps[Kwf_Assets_Dependency_Abstract::DEPENDENCY_TYPE_REQUIRES][] = new Kwf_Ext_Assets_JsDependency($this->_providerList, 'ext/build/classic/theme-triton/theme-triton-debug.js');
         }
 
 
