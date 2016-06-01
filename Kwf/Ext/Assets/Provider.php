@@ -286,9 +286,8 @@ class Kwf_Ext_Assets_Provider extends Kwf_Assets_Provider_Abstract
         }
 
         if ($dependency->getFileNameWithType() == 'ext/classic/classic/src/panel/Panel.js') {
-            //$deps[Kwf_Assets_Dependency_Abstract::DEPENDENCY_TYPE_REQUIRES][] = new Kwf_Ext_Assets_CssDependency($this->_providerList, 'ext/build/classic/theme-triton/resources/theme-triton-all_1.css');
-            //$deps[Kwf_Assets_Dependency_Abstract::DEPENDENCY_TYPE_REQUIRES][] = new Kwf_Ext_Assets_CssDependency($this->_providerList, 'ext/build/classic/theme-triton/resources/theme-triton-all_2.css');
-            //$deps[Kwf_Assets_Dependency_Abstract::DEPENDENCY_TYPE_REQUIRES][] = new Kwf_Ext_Assets_CssDependency($this->_providerList, 'web/out.css');
+            //$deps[Kwf_Assets_Dependency_Abstract::DEPENDENCY_TYPE_REQUIRES][] = new Kwf_Assets_Dependency_File_Css($this->_providerList, 'ext/build/classic/theme-triton/resources/theme-triton-all-debug_1.css');
+            //$deps[Kwf_Assets_Dependency_Abstract::DEPENDENCY_TYPE_REQUIRES][] = new Kwf_Assets_Dependency_File_Css($this->_providerList, 'ext/build/classic/theme-triton/resources/theme-triton-all-debug_2.css');
             $deps[Kwf_Assets_Dependency_Abstract::DEPENDENCY_TYPE_REQUIRES][] = new Kwf_Ext_Assets_JsDependency($this->_providerList, 'ext/build/classic/theme-triton/theme-triton-debug.js');
         }
 
@@ -306,6 +305,9 @@ class Kwf_Ext_Assets_Provider extends Kwf_Assets_Provider_Abstract
         } else if ($dependency->getFileNameWithType() == 'ext/packages/core/src/Ext.js') {
             array_unshift($deps[Kwf_Assets_Dependency_Abstract::DEPENDENCY_TYPE_REQUIRES], new Kwf_Ext_Assets_Dependency_Manifest($this->_providerList));
             $additionalDeps[] = 'Ext.Boot';
+        } else if ($dependency->getFileNameWithType() == 'ext/packages/core/src/list/Tree.js') {
+            $additionalDeps[] = 'Ext.list.TreeItem';
+            $additionalDeps[] = 'Ext.tree.View';
         }
         foreach ($additionalDeps as $i) {
             $d = $this->_providerList->findDependency($i);

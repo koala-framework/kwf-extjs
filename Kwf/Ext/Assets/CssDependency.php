@@ -23,7 +23,7 @@ class Kwf_Ext_Assets_CssDependency extends Kwf_Assets_Dependency_Abstract
         $extClasses = array();
         $webSassFiles = array();
         foreach ($it as $i) {
-            if ($i instanceof Kwf_Assets_Dependency_File)
+            if ($i instanceof Kwf_Assets_Dependency_File) {
                 if ($i->getType() == 'ext') {
                     $path = $i->getFileNameWithType();
                     if (substr($path, 0, 24) == 'ext/classic/classic/src/') {
@@ -45,10 +45,15 @@ class Kwf_Ext_Assets_CssDependency extends Kwf_Assets_Dependency_Abstract
                     }
                     $extClasses[] = ('Ext.'.str_replace(array('.js', '/'), array('', '.'), $extClass));
                 } else if (substr($i->getFileNameWithType(), 0, 8) == 'web/ext/') {
-                    if (file_exists(substr($i->getFileNameWithType(), 4, -3).'.scss')) {
-                        $webSassFiles[] = substr($i->getFileNameWithType(), 4, -3).'.scss';
+                    if (file_exists(substr($i->getAbsoluteFileName(), 0, -3).'.scss')) {
+                        $webSassFiles[] = substr($i->getAbsoluteFileName(), 0, -3).'.scss';
+                    }
+                } else if (substr($i->getFileNameWithType(), 0, 10) == 'kwfext/js/') {
+                    if (file_exists(substr($i->getAbsoluteFileName(), 0, -3).'.scss')) {
+                        $webSassFiles[] = substr($i->getAbsoluteFileName(), 0, -3).'.scss';
                     }
                 }
+            }
         }
 
         $packages = array(
