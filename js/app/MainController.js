@@ -39,13 +39,13 @@ Ext.define('KwfExt.app.MainController', {
     {
         this.callParent(arguments);
 
-        if (!this.mainPanel || !(this.mainPanel instanceof Ext.panel.Panel)) {
-            throw new Error("mainPanel is required and must be an Ext.panel.Panel");
-        }
 
         Ext.get('loading').fadeOut({remove: true});
 
         if (!this.viewport) {
+            if (!this.mainPanel || !(this.mainPanel instanceof Ext.panel.Panel)) {
+                throw new Error("mainPanel is required and must be an Ext.panel.Panel");
+            }
             this.viewport = Ext.create('KwfExt.Viewport', {
                 items: [this.mainPanel]
             });
