@@ -1,0 +1,143 @@
+$lightest-color:#fff;
+/*
+$base-color:#35baf6;
+$circle-border-radius:50%;
+$base-border-color: #ddd;
+$font-weight: normal;
+
+$accordion-header-background-color: $lightest-color;
+$accordion-header-color: #333;
+$social-facebook-btn-background: #167abc;
+$social-twitter-btn-background: #03b4d5;
+$social-google-plus-btn-background: #e44959;
+$social-envelope-btn-background: #7754aa;
+*/
+$button-toolbar-background-color: transparent;
+$button-toolbar-border-color: transparent;
+$button-toolbar-hover-background-color: #efefef;
+
+
+
+//Form and Toolbar Button UI colors
+/*
+$color-blue: #167abc;
+$color-soft-cyan: #03b4d5;
+$color-soft-blue: #2eadf5;
+$color-soft-green: #9cc96b;
+$color-soft-red: #e44959;
+$color-soft-purple: #925e8b;
+$color-gray: #949495;
+$color-green: #16b603;
+*/
+
+
+
+
+
+//--------------------------------------------------------
+// Create classes for full-size responsive items
+/*
+.big-100 {
+    @include responsivecolumn-item(100%);
+}
+
+.big-60 {
+    @include responsivecolumn-item(60%);
+}
+
+.big-50 {
+    @include responsivecolumn-item(50%);
+}
+
+.big-40 {
+    @include responsivecolumn-item(40%);
+}
+
+.big-33 {
+    @include responsivecolumn-item(33.33%);
+}
+
+.big-20 {
+    @include responsivecolumn-item(20%);
+}
+
+//--------------------------------------------------------
+// And classes for small-size responsive items
+
+ .x-responsivecolumn-small {
+     > .small-100 {
+         @include responsivecolumn-item(100%);
+     }
+
+     > .small-50 {
+         @include responsivecolumn-item(50%);
+     }
+}
+*/
+//--------------------------------------------------------
+
+.sencha-logo {
+    background-color: $base-color;
+    height: 65px;
+
+    font-size: 16px;
+    color: $lightest-color;
+    margin-left: 17px;
+    overflow: hidden;
+
+    .main-logo {
+        line-height: 65px;
+        img{
+            margin-left: 22px;
+            margin-right: 22px;
+            top: 8px;
+            position: relative;
+        }
+    }
+}
+
+.sencha-dash-dash-headerbar {
+    padding:0 30px 0 0;
+    position:fixed;
+    width:100%;
+    z-index:10;
+    border:none;
+    .header-right-profile-image {
+        border-radius: 20px;
+    }
+}
+.top-english-button{
+    .x-btn-icon-el{
+        width:21px;
+        height:14px;
+    }
+}
+.collapsed{
+    .hot-icon,.new-icon{
+        &:after{
+            display:none;
+        }
+    }
+    .x-tree-elbow-img{
+        display:none;
+    }
+
+    .x-tree-node-text {
+        display:none;
+    }
+}
+.x-grid-cell{
+    position:relative;
+}
+.toolbar-btn-shadow{
+    @include box-shadow(0 1px 2px rgba(0, 0, 0, 0.2));
+    .x-btn-over{
+        background-color: $button-toolbar-hover-background-color;
+    }
+}
+
+.delete-focus-bg {
+    &:focus, &:hover{
+        background: none;
+    }
+}
