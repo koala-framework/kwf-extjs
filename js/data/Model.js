@@ -13,8 +13,7 @@ Ext.define('KwfExt.data.Model', {
             url: '{prefix}/{entityName:uncapitalize}',
 
             reader: {
-                type: 'json',
-                rootProperty: 'data'
+                type: 'json'
             },
 
             writer: {
