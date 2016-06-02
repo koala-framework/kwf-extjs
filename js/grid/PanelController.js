@@ -185,10 +185,14 @@ Ext.define('KwfExt.grid.PanelController', {
                 Ext.each(this.view.columns, function(col) {
                     if (!col.dataIndex) return;
                     var val = row.get(col.dataIndex);
-                    if (col.exportRenderer) {
-                        val = Ext.util.Format.stripTags(col.exportRenderer(val, col, row));
-                    } else if (col.renderer) {
-                        val = Ext.util.Format.stripTags(col.renderer(val, col, row));
+                    if(typeof(val) === "boolean") {
+                        val = val ? trlKwf('Yes') : trlKwf('No');
+                    } else {
+                        if (col.exportRenderer) {
+                            val = Ext.util.Format.stripTags(col.exportRenderer(val, col, row));
+                        } else if (col.renderer) {
+                            val = Ext.util.Format.stripTags(col.renderer(val, col, row));
+                        }
                     }
                     if (!val) val = '';
                     excelRow.push(val);
@@ -230,7 +234,9 @@ Ext.define('KwfExt.grid.PanelController', {
                 Ext.each(this.view.columns, function(col) {
                     if (!col.dataIndex) return;
                     var val = row.get(col.dataIndex);
-                    if (col.renderer) {
+                    if(typeof(val) === "boolean") {
+                        val = val ? trlKwf('Yes') : trlKwf('No');
+                    } else if (col.renderer) {
                         val = Ext.util.Format.stripTags(col.renderer(val, col, row));
                     }
                     if (!val) val = '';
