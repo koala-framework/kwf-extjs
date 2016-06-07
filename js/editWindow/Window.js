@@ -16,7 +16,7 @@ Ext.define('KwfExt.editWindow.Window', {
         cancelButton: true
     },
 
-    session: true,
+    session: { schema: 'app' },
     layout: 'fit',
     border: false,
     modal: true,
