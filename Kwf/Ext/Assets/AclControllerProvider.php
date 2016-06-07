@@ -15,6 +15,14 @@ class Kwf_Ext_Assets_AclControllerProvider extends Kwf_Assets_Provider_Abstract
                     $deps[] = $d;
                 }
             }
+
+            //when a App.controller.Main is found automatically load it
+            $cls = 'App.controller.Main';
+            $d = $this->_providerList->findDependency($cls);
+            if ($d) {
+                $deps[] = $d;
+            }
+
             if ($deps) {
                 array_unshift($deps, $this->_providerList->findDependency('Ext.app.Application'));
             }
