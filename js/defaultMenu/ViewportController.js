@@ -183,7 +183,8 @@ Ext.define('KwfExt.defaultMenu.ViewportController', {
 
     onMainViewRender:function() {
         if (!window.location.hash) {
-            this.redirectTo("dashboard");
+            var store = this.getViewModel().getStore('menu');
+            this.redirectTo(store.getRoot().getChildAt(0).get('routeId'));
         }
     },
 
