@@ -308,6 +308,8 @@ class Kwf_Ext_Assets_Provider extends Kwf_Assets_Provider_Abstract
         } else if ($dependency->getFileNameWithType() == 'ext/packages/core/src/list/Tree.js') {
             $additionalDeps[] = 'Ext.list.TreeItem';
             $additionalDeps[] = 'Ext.tree.View';
+        } else if ($dependency->getFileNameWithType() == 'ext/classic/classic/src/container/Container.js') {
+            $additionalDeps[] = 'Ext.util.ItemCollection';
         }
         foreach ($additionalDeps as $i) {
             $d = $this->_providerList->findDependency($i);
