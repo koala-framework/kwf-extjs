@@ -43,7 +43,13 @@ class Kwf_Ext_Assets_CssDependency extends Kwf_Assets_Dependency_Abstract
                     } else {
                         throw new Kwf_Exception("unknown package: $path");
                     }
-                    $extClasses[] = ('Ext.'.str_replace(array('.js', '/'), array('', '.'), $extClass));
+                    $extClass = ('Ext.'.str_replace(array('.js', '/'), array('', '.'), $extClass));
+                    if ($extClass == 'Ext.tree.View') {
+                        //($form-checkbox-size is used by tree/View.scss)
+                        $extClasses[] = 'Ext.form.field.Base';
+                        $extClasses[] = 'Ext.form.field.Checkbox';
+                    }
+                    $extClasses[] = $extClass;
                 } else if (substr($i->getFileNameWithType(), 0, 8) == 'web/ext/') {
                     if (file_exists(substr($i->getAbsoluteFileName(), 0, -3).'.scss')) {
                         $webSassFiles[] = substr($i->getAbsoluteFileName(), 0, -3).'.scss';
@@ -55,6 +61,7 @@ class Kwf_Ext_Assets_CssDependency extends Kwf_Assets_Dependency_Abstract
                 }
             }
         }
+        $extClasses = array_unique($extClasses);
 
         $packages = array(
             'ext'           => array(
