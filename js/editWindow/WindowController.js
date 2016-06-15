@@ -61,28 +61,41 @@ Ext.define('KwfExt.editWindow.WindowController', {
                 buttons: Ext.Msg.YESNOCANCEL,
                 fn: function(btn) {
                     if (btn == 'no') {
-                        var record = this.view.getRecord();
-                        if (record.phantom) {
-                            record.drop();
-                        }
-
-                        //create new session to destroy all made changes
-                        var newSession;
-                        if (session.getParent()) {
-                            newSession = session.getParent().spawn();
-                        } else {
-                            newSession = new Ext.data.Session({
-                                schema: session.getSchema()
+                        var session = this.getSession();
+                        var c = session.getChangesForParent();
+                        var stores = [];
+                        for (var key in c) {
+                            Ext.each(c[key].U, function (i) {
+                                var r = session.getRecord(key, i.id);
+                                if (r.store) {
+                                    if (stores.indexOf(r.store) == -1) {
+                                        stores.push(r.store);
+                                    }
+                                } else {
+                                    r.reject();
+                                }
+                            });
+                            Ext.each(c[key].C, function (i) {
+                                var r = session.getRecord(key, i.id);
+                                if (r.store) {
+                                    if (stores.indexOf(r.store) == -1) {
+                                        stores.push(r.store);
+                                    }
+                                }
+                            });
+                            Ext.each(c[key].D, function (i) {
+                                var r = session.getRecord(key, i.id);
+                                if (r.store) {
+                                    if (stores.indexOf(r.store) == -1) {
+                                        stores.push(r.store);
+                                    }
+                                }
                             });
                         }
-                        this.view.setSession(newSession);
-                        this.getViewModel().setSession(newSession);
-                        Ext.each(this.view.query("[viewModel]"), function(i) {
-                            if (i.getViewModel().getSession() == session) {
-                                i.getViewModel().setSession(newSession);
-                            }
-                        }, this);
-                        session.destroy();
+
+                        Ext.each(stores, function(i) {
+                            i.rejectChanges();
+                        });
 
                         this.closeWindow();
                     } else if (btn == 'yes') {
