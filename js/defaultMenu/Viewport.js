@@ -73,15 +73,16 @@ Ext.define('KwfExt.defaultMenu.Viewport', {
                     href: '#profile',
                     hrefTarget: '_self',
                     tooltip: 'See your profile'
-                },
-                {
+                }
+                 */
+                , {
                     cls: 'delete-focus-bg',
                     iconCls:'x-fa fa-sign-out',
                     href: '/kwf/user/logout',
                     hrefTarget: '_self',
                     tooltip: trlKwf('Logout')
                 }
-                */
+
             ]
         },
         {
