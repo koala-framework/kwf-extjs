@@ -95,13 +95,17 @@ Ext.define('KwfExt.grid.PanelController', {
             }
 
             //when a child session is saved reload the currently selected record's data
-            Ext.each(this.getView().findParentBy(function(i){return i.getSession()}).query("[session]"), function(sessionView) {
-                sessionView.on('sessionsave', function() {
-                        Ext.each(this.getView().getSelectionModel().getSelection(), function(record) {
+            if (this.getView().findParentBy(function(i){return i.getSession()})) {
+                Ext.each(this.getView().findParentBy(function (i) {
+                    return i.getSession()
+                }).query("[session]"), function (sessionView) {
+                    sessionView.on('sessionsave', function () {
+                        Ext.each(this.getView().getSelectionModel().getSelection(), function (record) {
                             record.reloadData();
                         }, this);
+                    }, this);
                 }, this);
-            }, this);
+            }
         }, this);
 
         this.callParent(arguments);
