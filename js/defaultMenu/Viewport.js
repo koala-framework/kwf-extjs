@@ -76,6 +76,7 @@ Ext.define('KwfExt.defaultMenu.Viewport', {
                 }
                  */
                 , {
+                    text: trlKwf('Logout'),
                     cls: 'delete-focus-bg',
                     iconCls:'x-fa fa-sign-out',
                     href: '/kwf/user/logout',
