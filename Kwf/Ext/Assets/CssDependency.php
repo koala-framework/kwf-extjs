@@ -182,9 +182,21 @@ class Kwf_Ext_Assets_CssDependency extends Kwf_Assets_Dependency_Abstract
 
         $bin = Kwf_Config::getValue('server.nodeSassBinary');
         if (!$bin) {
-            $bin = getcwd()."/".VENDOR_PATH."/bin/node ".dirname(dirname(dirname(dirname(dirname(__FILE__))))).'/node_modules/node-sass/bin/node-sass';
+            if (file_exists('node_modules/node-sass/bin/node-sass')) {
+                //>= kwf 4.2
+                $bin = getcwd()."/".VENDOR_PATH."/bin/node ".getcwd().'/node_modules/node-sass/bin/node-sass';
+            } else {
+                //< kwf 4.2
+                $bin = getcwd()."/".VENDOR_PATH."/bin/node ".dirname(dirname(dirname(dirname(dirname(__FILE__))))).'/node_modules/node-sass/bin/node-sass';
+            }
         } else {
-            $p = json_decode(file_get_contents(KWF_PATH.'/node_modules/node-sass/package.json'), true);
+            if (file_exists('node_modules/node-sass/bin/node-sass')) {
+                //>= kwf 4.2
+                $p = json_decode(file_get_contents('node_modules/node-sass/package.json'), true);
+            } else {
+                //< kwf 4.2
+                $p = json_decode(file_get_contents(KWF_PATH.'/node_modules/node-sass/package.json'), true);
+            }
             $bin = str_replace('%version%', $p['version'], $bin);
             unset($p);
         }
