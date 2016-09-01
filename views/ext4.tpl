@@ -48,5 +48,7 @@
     <?php if (isset($this->sessionToken)) { ?>
     Kwf.sessionToken = '<?= $this->sessionToken ?>';
     <?php } ?>
-    Ext.application('App.controller.<?=$this->extController?>');
+    Kwf.main = function() {
+        Ext.application('App.controller.<?=$this->extController?>');
+    };
     </script>
