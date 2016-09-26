@@ -41,14 +41,22 @@
     <?= $this->assets($this->assetsPackage) ?>
 
     <script type="text/javascript">
-    <?php if ($this->user) { ?>
-    Kwf.userId = '<?= $this->user->id ?>';
-    <?php } ?>
-    Kwf.userRole = '<?= $this->userRole ?>';
-    <?php if (isset($this->sessionToken)) { ?>
-    Kwf.sessionToken = '<?= $this->sessionToken ?>';
-    <?php } ?>
-    Kwf.main = function() {
-        Ext.application('App.controller.<?=$this->extController?>');
-    };
+    (function() {
+        <?php if ($this->uniquePrefix) { ?>
+            var Kwf = <?=$this->uniquePrefix?>.Kwf;
+        <?php } ?>
+        <?php if ($this->user) { ?>
+        Kwf.userId = '<?= $this->user->id ?>';
+        <?php } ?>
+        Kwf.userRole = '<?= $this->userRole ?>';
+        <?php if (isset($this->sessionToken)) { ?>
+        Kwf.sessionToken = '<?= $this->sessionToken ?>';
+        <?php } ?>
+        Kwf.main = function() {
+            <?php if ($this->uniquePrefix) { ?>
+                var Ext = <?=$this->uniquePrefix?>.Ext;
+            <?php } ?>
+            Ext.application('App.controller.<?=$this->extController?>');
+        };
+    })();
     </script>

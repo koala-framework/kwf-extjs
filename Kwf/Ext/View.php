@@ -9,7 +9,7 @@ class Kwf_Ext_View extends Kwf_View
 
     public function render($name)
     {
-        $this->assetsPackage = Kwf_Assets_Package_Default::getInstance('Admin');
+        $this->assetsPackage = Kwf_Assets_Package_Default::getAdminMainInstance();
 
         $this->extTemplate = 'ext4.tpl';
         if (Kwf_Util_SessionToken::getSessionToken()) {
@@ -36,6 +36,8 @@ class Kwf_Ext_View extends Kwf_View
         if ($user) {
             $this->user = $user;
         }
+
+        $this->uniquePrefix = Kwf_Config::getValue('application.uniquePrefix');
 
         return parent::render($name);
     }
