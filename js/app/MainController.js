@@ -39,6 +39,7 @@ Ext.define('KwfExt.app.MainController', {
     {
         this.callParent(arguments);
 
+        Kwf.activateKeepAlive();
 
         Ext.get('loading').fadeOut({remove: true});
 
