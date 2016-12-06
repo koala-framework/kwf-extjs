@@ -83,7 +83,7 @@ Ext.define('KwfExt.grid.PanelController', {
         this.getView().on('render', function() {
             var parent = this.getView();
             while (parent.getRefOwner()) {
-                if (parent.getRefOwner().getLayout() instanceof Ext.layout.container.Card) {
+                if (Ext.layout.container.Card && parent.getRefOwner().getLayout() instanceof Ext.layout.container.Card) {
                     parent.on('show', function(panel) {
                         if (!this.getView().isHierarchicallyHidden()) {
                             var store = this.getView().getStore();

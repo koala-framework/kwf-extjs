@@ -49,6 +49,10 @@ class Kwf_Ext_Assets_CssDependency extends Kwf_Assets_Dependency_Abstract
                         $extClasses[] = 'Ext.form.field.Base';
                         $extClasses[] = 'Ext.form.field.Checkbox';
                     }
+                    if ($extClass == 'Ext.resizer.Splitter') {
+                        //($border-layout-ct-background-color is used by resizer/Splitter.scss)
+                        $extClasses[] = 'Ext.layout.container.Border';
+                    }
                     $extClasses[] = $extClass;
                 } else if (substr($i->getFileNameWithType(), 0, 8) == 'web/ext/') {
                     if (file_exists(substr($i->getAbsoluteFileName(), 0, -3).'.scss')) {

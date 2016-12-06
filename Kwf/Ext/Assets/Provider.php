@@ -251,7 +251,9 @@ class Kwf_Ext_Assets_Provider extends Kwf_Assets_Provider_Abstract
                     $t = $m[1][$k];
                     $t = ($t == 'componentLayout') ? 'layout' : $t;
                     if ($t == 'proxy') $type = Kwf_Assets_Dependency_Abstract::DEPENDENCY_TYPE_USES;
-                    $classes[$type][] = $aliasClasses[$t.'.'.$cls];
+                    if (isset($aliasClasses[$t.'.'.$cls])) {
+                        $classes[$type][] = $aliasClasses[$t.'.'.$cls];
+                    }
                 }
             }
             if (preg_match_all('#^\s*(proxy|layout|reader|writer|componentLayout)\s*:\s*{\s*type\s*:\s*[\'"]([a-zA-Z0-9\.]+)[\'"]#m', $fileContents, $m)) {
@@ -260,7 +262,9 @@ class Kwf_Ext_Assets_Provider extends Kwf_Assets_Provider_Abstract
                     $t = $m[1][$k];
                     $t = ($t == 'componentLayout') ? 'layout' : $t;
                     if ($t == 'proxy') $type = Kwf_Assets_Dependency_Abstract::DEPENDENCY_TYPE_USES;
-                    $classes[$type][] = $aliasClasses[$t.'.'.$cls];
+                    if (isset($aliasClasses[$t.'.'.$cls])) {
+                        $classes[$type][] = $aliasClasses[$t.'.'.$cls];
+                    }
                 }
             }
         }
