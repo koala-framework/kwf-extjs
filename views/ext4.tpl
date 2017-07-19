@@ -35,6 +35,9 @@
             document.write('<?= $this->applicationName ?><br /><span id="loading-msg"><?= trlKwf('Loading...') ?></span></div>');
         document.write('</div>');
         var Kwf = {isApp: true};
+        <?php if (!$this->uniquePrefix) { ?>
+        var Ext = {};
+        <?php } ?>
     </script>
 
     <?= $this->debugData() ?>

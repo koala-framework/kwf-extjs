@@ -11,6 +11,9 @@ class Kwf_Ext_Assets_JsDependency extends Kwf_Assets_Dependency_File_Js
             $add .= "});\n";
             $ret->concat(Kwf_SourceMaps_SourceMap::createEmptyMap($add));
         }
+        if ($this->getFileNameWithType() == 'ext/packages/core/.sencha/package/Boot.js') {
+            $ret->stringReplace('var Ext=Ext||{}', 'var Ext=window.Ext||Ext||{}');
+        }
         return $ret;
     }
 }
